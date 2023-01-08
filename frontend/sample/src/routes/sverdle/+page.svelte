@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {confetti} from '@neoconfetti/svelte';
-    import {enhance} from '$app/forms';
-    import type {ActionData, PageData} from './$types';
-    import {reduced_motion} from './reduced-motion';
+	import {confetti} from '@neoconfetti/svelte';
+	import {enhance} from '$app/forms';
+	import type {ActionData, PageData} from '../../../../.svelte-kit/types/src/routes';
+	import {reduced_motion} from './reduced-motion';
 
-    export let data: PageData;
+	export let data: PageData;
 
 	export let form: ActionData;
 
