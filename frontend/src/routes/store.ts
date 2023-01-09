@@ -1,4 +1,19 @@
 import {writable} from "svelte/store";
-import type {Board} from "./api/types.js";
+import {base} from "./api/api";
 
-export const boards = writable<Board[]>([]);
+const createBoards = () => {
+    const {subscribe, set, update} = writable([])
+
+    const get = async () => {
+        const res = await base().get("/boards")
+        set(await res.data)
+    }
+
+    get()
+
+    return {
+        subscribe,
+        get
+    }
+}
+export const boards = createBoards();

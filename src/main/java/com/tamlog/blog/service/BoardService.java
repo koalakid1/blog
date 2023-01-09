@@ -5,6 +5,7 @@ import com.tamlog.blog.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -13,6 +14,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     public BoardDto postBoard(BoardDto boardDto) {
+        boardDto.setRegisterDate(LocalDateTime.now());
         return BoardDto.of(boardRepository.save(boardDto.toEntity()));
     }
 

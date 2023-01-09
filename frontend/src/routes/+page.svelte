@@ -1,16 +1,31 @@
-<script>
-    import {onMount} from "svelte";
-    import API from "./api/api";
+<script lang="ts">
+    import {boards} from './store.ts'
+    import {base} from "./api/api";
+    import type Board from "./api/types.svelte";
 
-    let boards;
+    let board: Board = {
+        title: "",
+        content: "",
+        writer: "",
+    };
 
-    onMount(async () => {
-        try {
-            boards = await API.get("/boards").then(res => res.data);
-        } catch (e) {
-            console.log(e)
-        }
-    })
+    async function boardPost() {
+        await base().post("boards", JSON.stringify(board))
+        await boards.get()
+    }
 </script>
 
-{boards}
+<ul>
+    {#each $boards as board}
+        <li>
+            {board.title}
+        </li>
+    {/each}
+</ul>
+
+<input bind:value={board.title}/>
+<input bind:value={board.content}/>
+<input bind:value={board.writer}/>
+<button type="button" on:click={boardPost}>등록</button>
+
+

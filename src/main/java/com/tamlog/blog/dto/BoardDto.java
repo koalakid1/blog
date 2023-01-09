@@ -26,9 +26,13 @@ public class BoardDto {
 
     public Board toEntity() {
         return Board.builder()
+                .id(this.id)
                 .content(this.content)
                 .title(this.title)
                 .writer(this.writer)
+                .registerDate(this.registerDate)
+                .deleteDate(this.deleteDate)
+                .updateDate(this.updateDate)
                 .build();
     }
 

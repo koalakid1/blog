@@ -1,54 +1,90 @@
-// Api.js
-import axios, {type Method} from "axios";
-import {env} from "$env/dynamic/public";
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios, {type AxiosRequestConfig, type Method} from "axios";
+import {PUBLIC_API_URL} from "$env/static/public";
 
-// Create a instance of axios to use the same base url.
-const axiosAPI = axios.create({
-    baseURL: env.PUBLIC_API_URL, // it's not recommended to have this info here.
-});
+// import { getCookie } from "src/utils/cookie";
 
-// implement a method to execute all the request from here.
-const apiRequest = (method: Method, url: string, request?: any) => {
-    const headers = {
-        authorization: "",
-    };
-    //using the axios instance to perform the request that received from each http method
-    return axiosAPI({
-        method,
-        url,
-        data: request,
-        headers,
-    })
-        .then((res) => {
-            return Promise.resolve(res.data);
-        })
-        .catch((err) => {
-            return Promise.reject(err);
-        });
+class RequestConfig {
+    public baseURL: string;
+
+    public headers?: any;
+
+    public method?: Method;
+
+    public url?: string;
+
+    public data?: any;
+
+    constructor(baseURL: string) {
+        this.baseURL = baseURL;
+    }
+
+    public setAuthorization(token?: any) {
+        if (token) {
+            this.headers = {
+                ...this.headers,
+                Authorization: `Bearer ${token}`,
+            };
+        }
+    }
+
+    public setUuid(uuid: string) {
+        this.headers = {
+            ...this.headers,
+            "Device-uuid": uuid,
+        };
+    }
+
+    public get(path: string, config?: AxiosRequestConfig) {
+        this.method = "GET";
+        this.url = this.baseURL + path;
+
+        return { ...config, ...this };
+    }
+
+    public delete(path: string, config?: AxiosRequestConfig) {
+        this.method = "DELETE";
+        this.url = this.baseURL + path;
+
+        return { ...config, ...this };
+    }
+
+    public post(path: string, data?: any, config?: AxiosRequestConfig) {
+        this.method = "POST";
+        this.url = this.baseURL + path;
+        this.data = data;
+
+        return { ...config, ...this };
+    }
+
+    public put(path: string, data?: any, config?: AxiosRequestConfig) {
+        this.method = "PUT";
+        this.url = this.baseURL + path;
+        this.data = data;
+
+        return { ...config, ...this };
+    }
+
+    public patch(path: string, data?: any, config?: AxiosRequestConfig) {
+        this.method = "PATCH";
+        this.url = this.baseURL + path;
+        this.data = data;
+
+        return { ...config, ...this };
+    }
+}
+
+export const base = () => {
+    const requestConfig = new RequestConfig(PUBLIC_API_URL);
+
+    requestConfig.headers = {...requestConfig.headers, "Content-Type": "application/json"}
+    // if (getCookie("accessToken")) {
+    //     requestConfig.setAuthorization(getCookie("accessToken"));
+    // }
+    // if (getCookie("uuid")) {
+    //     requestConfig.setUuid(getCookie("uuid"));
+    // }
+
+    return axios.create(requestConfig);
 };
-
-// function to execute the http get request
-const get = (url: string, request?: any) => apiRequest("get", url, request);
-
-// function to execute the http delete request
-const deleteRequest = (url: string, request?: any) => apiRequest("delete", url, request);
-
-// function to execute the http post request
-const post = (url: string, request?: any) => apiRequest("post", url, request);
-
-// function to execute the http put request
-const put = (url: string, request?: any) => apiRequest("put", url, request);
-
-// function to execute the http path request
-const patch = (url: string, request?: any) => apiRequest("patch", url, request);
-
-// expose your method to other services or actions
-const API = {
-    get,
-    delete: deleteRequest,
-    post,
-    put,
-    patch,
-};
-
-export default API;
