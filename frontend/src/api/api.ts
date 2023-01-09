@@ -1,7 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, {type AxiosRequestConfig, type Method} from "axios";
-import {PUBLIC_API_URL} from "$env/static/public";
 
 // import { getCookie } from "src/utils/cookie";
 
@@ -76,7 +75,7 @@ class RequestConfig {
 }
 
 export const base = () => {
-    const requestConfig = new RequestConfig(PUBLIC_API_URL);
+    const requestConfig = new RequestConfig(import.meta.env.VITE_API_URL);
 
     requestConfig.headers = {...requestConfig.headers, "Content-Type": "application/json"}
     // if (getCookie("accessToken")) {

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {boards} from './store.ts'
-    import {base} from "./api/api";
-    import type Board from "./api/types.svelte";
+    import {boards} from '../store.ts'
+    import {base} from "../api/api";
+    import type Board from "../api/types.svelte";
 
     let board: Board = {
         title: "",

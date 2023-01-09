@@ -225,3 +225,5 @@ src/main/resources/application-*
 !src/main/resources/bamboo-build.yml
 !src/main/resources/application-test.yml
 !src/main/resources/application-example.yml
+
+.env
