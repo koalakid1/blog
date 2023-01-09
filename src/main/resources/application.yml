@@ -1,8 +1,8 @@
 spring:
   application:
     name: blog
-  flyway:
-    locations: classpath:/db/flyway # migration 파일들이 위치하는 directory
-    sql-migration-suffixes: sql        # 파일 확장자
-    baseline-on-migrate: true          # flyway_schema_history 테이블을 자동으로 생성할지 여부
-    baseline-version: 0                # 최초 버전 정보
+#  flyway:
+#    locations: classpath:/db/flyway # migration 파일들이 위치하는 directory
+#    sql-migration-suffixes: sql        # 파일 확장자
+#    baseline-on-migrate: true          # flyway_schema_history 테이블을 자동으로 생성할지 여부
+#    baseline-version: 0                # 최초 버전 정보
