@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+    import {onMount} from "svelte";
+    import API from "./api/api";
+
+    let boards;
+
+    onMount(async () => {
+        try {
+            boards = await API.get("/boards").then(res => res.data);
+        } catch (e) {
+            console.log(e)
+        }
+    })
+</script>
+
+{boards}
