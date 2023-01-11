@@ -1,7 +1,18 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+buildscript {
+    ext {
+        restdocsApiSpecVersion = '0.16.2'
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.7'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'com.epages.restdocs-api-spec' version "$restdocsApiSpecVersion"
+    id 'org.hidetake.swagger.generator' version '2.19.2'
 }
 
 group = 'com.tamlog'
@@ -18,6 +29,12 @@ repositories {
     mavenCentral()
 }
 
+swaggerSources {
+    sample {
+        setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -28,8 +45,40 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.flywaydb:flyway-core'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // restdocs + OpenAPI3 + swagger
+    testImplementation "com.epages:restdocs-api-spec-restassured:${restdocsApiSpecVersion}"
+    testImplementation 'io.rest-assured:rest-assured'
+    swaggerUI 'org.webjars:swagger-ui:4.15.5'
+
+    testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+openapi3 {
+    server = 'https://localhost:8080'
+    title = 'tamlog backend API'
+    description = 'tamlog backend description'
+    tagDescriptionsPropertiesFile = 'src/docs/tag-descriptions.yaml'
+    version = '0.1.0'
+    format = 'yaml'
+}
+
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+}
+
+tasks.register('copySwaggerUI', Copy) {
+    dependsOn 'generateSwaggerUISample'
+
+    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+    from("${generateSwaggerUISampleTask.outputDir}")
+    into("${project.buildDir}/resources/main/static/docs")
+}
+
+tasks.withType(BootJar) {
+    dependsOn 'copySwaggerUI'
 }
