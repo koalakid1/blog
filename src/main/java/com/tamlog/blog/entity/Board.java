@@ -1,37 +1,50 @@
 package com.tamlog.blog.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
 @Entity
-@Getter @NoArgsConstructor @AllArgsConstructor
-@EqualsAndHashCode @ToString @Builder
+@Table(name = "board")
 public class Board {
-    @Id @GeneratedValue
-    @Column(name="board_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "board_id", nullable = false)
     private Long id;
 
-    @Column(name = "writer")
-    private String writer;
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 200)
     private String title;
 
-    @Column(name = "content")
+    @Lob
+    @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column(name = "register_date")
-    @CreatedDate
-    private LocalDateTime registerDate;
+    @ColumnDefault("0")
+    @Column(name = "hit")
+    private Integer hit;
 
-    @Column(name = "update_date")
-    private LocalDateTime updateDate;
+    @ColumnDefault("0")
+    @Column(name = "like")
+    private Integer like;
 
-    @Column(name = "delete_date")
-    private LocalDateTime deleteDate;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "update_at")
+    private LocalDateTime updateAt;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

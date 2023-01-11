@@ -1,50 +1,23 @@
 package com.tamlog.blog.dto;
 
-import com.tamlog.blog.entity.Board;
-import lombok.Builder;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-@Data
-@Builder
 public class BoardDto {
+    Long getId;
 
-    private Long id;
+    String getTitle;
 
-    private String writer;
+    String getContent;
 
-    private String title;
+    Integer getHit;
 
-    private String content;
+    Integer getLike;
 
-    private LocalDateTime registerDate;
+    LocalDateTime getCreatedAt;
 
-    private LocalDateTime updateDate;
+    LocalDateTime getUpdateAt;
 
-    private LocalDateTime deleteDate;
+//    CategoryInfo getCategory;
 
-    public Board toEntity() {
-        return Board.builder()
-                .id(this.id)
-                .content(this.content)
-                .title(this.title)
-                .writer(this.writer)
-                .registerDate(this.registerDate)
-                .deleteDate(this.deleteDate)
-                .updateDate(this.updateDate)
-                .build();
-    }
-
-    public static BoardDto of(Board board) {
-        return BoardDto.builder()
-                .id(board.getId())
-                .content(board.getContent())
-                .title(board.getTitle())
-                .registerDate(board.getRegisterDate())
-                .deleteDate(board.getDeleteDate())
-                .updateDate(board.getUpdateDate())
-                .writer(board.getWriter())
-                .build();
-    }
+//    UserInfo getUser;
 }
