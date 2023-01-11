@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: blog-test
+  flyway:
+    enabled: false
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem:test
+      # ;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1; INIT=RUNSCRIPT FROM 'classpath:h2db_init.sql'
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
