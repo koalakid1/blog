@@ -6,6 +6,7 @@ import com.tamlog.blog.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -25,16 +26,31 @@ public class CategoryService {
                 .toList();
     }
 
-    public CategoryDto.Response updateCategory(Long categoryId, CategoryDto.Request request) {
-        var category = Category.builder()
-                .id(categoryId)
-                .name(request.getName())
-                .priority(request.getPriority())
-                .build();
+    @Transactional
+    public CategoryDto.Response updateCategoryName(Long categoryId, String updateName) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow();
+        category.updateName(updateName);
 
-        var updatedCategory = categoryRepository.save(category);
+        return CategoryDto.Response.of(category);
+    }
 
-        return CategoryDto.Response.of(updatedCategory);
+    @Transactional
+    public CategoryDto.Response updateCategoryPriority(Long categoryId, Integer updatePriority) {
+        var category = categoryRepository.findById(categoryId).orElseThrow();
+
+        Integer priority = category.getPriority();
+        assert priority != null;
+        int compareTo = priority.compareTo(updatePriority);
+        if (compareTo > 0) {
+            var categories = categoryRepository.findByPriorityGreaterThanEqualAndPriorityLessThan(updatePriority, priority);
+            categories.forEach(c -> c.updatePriority(c.getPriority() + 1));
+        } else if (compareTo < 0) {
+            var categories = categoryRepository.findByPriorityGreaterThanAndPriorityLessThanEqual(priority, updatePriority);
+            categories.forEach(c -> c.updatePriority(c.getPriority() - 1));
+        }
+        category.updatePriority(updatePriority);
+
+        return CategoryDto.Response.of(category);
     }
 
     public void deleteCategory(Long categoryId) {

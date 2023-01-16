@@ -48,6 +48,7 @@ dependencies {
 
     // restdocs + OpenAPI3 + swagger
     testImplementation "com.epages:restdocs-api-spec-restassured:${restdocsApiSpecVersion}"
+    testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
     testImplementation 'io.rest-assured:rest-assured'
     swaggerUI 'org.webjars:swagger-ui:4.15.5'
 
@@ -59,7 +60,7 @@ tasks.named('test') {
 }
 
 openapi3 {
-    server = 'https://localhost:8080'
+    server = 'http://localhost:8080'
     title = 'tamlog backend API'
     description = 'tamlog backend description'
     tagDescriptionsPropertiesFile = 'src/docs/tag-descriptions.yaml'

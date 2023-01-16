@@ -1,67 +1,173 @@
 package com.tamlog.blog.controller;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tamlog.blog.dto.CategoryDto;
 import com.tamlog.blog.entity.Category;
-import com.tamlog.blog.service.CategoryService;
-import io.restassured.http.ContentType;
+import com.tamlog.blog.repository.CategoryRepository;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.snippet.Snippet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
-import static io.restassured.RestAssured.given;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.applyPathPrefix;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CategoryControllerTest extends BaseControllerTest {
-    @MockBean
-    private CategoryService categoryService;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
-    private List<Category> categories = new ArrayList<>();
+    @Autowired
+    private ObjectMapper objectMapper;
 
+    private final Map<String, Object> postCategory = new HashMap<>();
+    private final Map<String, Object> updateCategory = new HashMap<>();
 
     @BeforeEach
     void setUp() {
-        for (int i = 0; i < 10; i++) {
-            categories.add(new Category((long) i, "category" + i, i));
+        for (int i = 1; i < 10; i++) {
+            var category = new Category((long) i, "category" + i, i);
+            categoryRepository.save(category);
         }
+        updateCategory.put("id", 9l);
+        postCategory.put("id", 10l);
+        postCategory.put("name", "category10");
+        postCategory.put("priority", 10);
     }
 
 
     @Test
     @DisplayName(value = "모든 카테고리 리스트 가져오는지 테스트")
     void getCategoriesTest() throws Exception {
-        //given
-        var responseBody = categories.stream()
-                .map(CategoryDto.Response::of)
-                .toList();
+        // when
+        var result = mockMvc.perform(get("/api/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
 
-        var response = given(spec).filter(document(DEFAULT_RESTDOC_PATH, REQUEST_FIELDS, RESPONSE_FIELDS))
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(ContentType.JSON)
-                .log().all()
-        .when().get("/api/categories")
-        .then().statusCode(HttpStatus.OK.value());
-        System.out.println("response = " + response);
+        // then
+        result.andExpect(status().is2xxSuccessful())
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
+                        .summary("카테고리 목록 전체를 가져옵니다.")
+                        .description("카테고리 목록 전체를 가져옵니다.")
+                        .responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
+                        )
+                        .responseFields(applyPathPrefix("[]", RESPONSE_FIELDS))
+                        .build())));
     }
 
-    private static final Snippet REQUEST_FIELDS = requestFields(
-            fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
-            fieldWithPath("name").type(JsonFieldType.NUMBER).description("카테고리 이름"),
-            fieldWithPath("priority").type(JsonFieldType.STRING).description("카테고리 순서")
+    @Test
+    @DisplayName(value = "카테고리 추가 성공")
+    void postCategoryTest() throws Exception {
+        // given
+        CategoryDto.Request category = new CategoryDto.Request(10l, "category10", 10);
+
+        // when
+        var result = mockMvc.perform(post("/api/categories")
+                .content(objectMapper.writeValueAsString(postCategory))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is2xxSuccessful())
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
+                        .summary("카테고리를 새로 등록합니다.")
+                        .description("카테고리를 새로 등록합니다.")
+                        .responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
+                        )
+                        .responseFields(RESPONSE_FIELDS)
+                        .build())));
+    }
+
+    @Test
+    @DisplayName(value = "이름만 데이터로 들어왔을 때, 이름 정보만 업데이트 되는지 테스트")
+    void updateCategoryNameTest() throws Exception {
+        //given
+        HashMap<String, Object> request = new HashMap<>();
+        request.put("name", "category9-update");
+
+        //when
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/name", 9l)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.name", Matchers.is("category9-update")))
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
+                        .summary("카테고리를 업데이트합니다.")
+                        .description("카테고리를 업데이트합니다.")
+                        .responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
+                        )
+                        .requestFields(fieldWithPath("name")
+                                .type(JsonFieldType.STRING)
+                                .description("카테고리 이름"))
+                        .responseFields(RESPONSE_FIELDS)
+                        .build())));
+
+        System.out.println(categoryRepository.findById(9l).get().getName());
+    }
+
+    @Test
+    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정")
+    void updateCategoryPriorityTest() throws Exception {
+        HashMap<String, Object> request = new HashMap<>();
+        request.put("priority", 5);
+        //when
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", 9l)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.priority", Matchers.is(5)))
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
+                        .summary("카테고리를 업데이트합니다.")
+                        .description("카테고리를 업데이트합니다.")
+                        .responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
+                        )
+                        .requestFields(fieldWithPath("priority")
+                                .type(JsonFieldType.NUMBER)
+                                .description("카테고리 순서"))
+                        .responseFields(RESPONSE_FIELDS)
+                        .build())));
+    }
+
+    private static final List<FieldDescriptor> REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
+            List.of(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
+                    fieldWithPath("name").type(JsonFieldType.STRING).description("카테고리 이름"),
+                    fieldWithPath("priority").type(JsonFieldType.NUMBER).description("카테고리 순서")
+            )
     );
 
-    private static final Snippet RESPONSE_FIELDS = responseFields(
-            fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
-            fieldWithPath("name").type(JsonFieldType.NUMBER).description("카테고리 이름"),
-            fieldWithPath("priority").type(JsonFieldType.STRING).description("카테고리 순서")
+    private static final List<FieldDescriptor> RESPONSE_FIELDS = new ArrayList<FieldDescriptor>(
+            List.of(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
+                    fieldWithPath("name").type(JsonFieldType.STRING).description("카테고리 이름"),
+                    fieldWithPath("priority").type(JsonFieldType.NUMBER).description("카테고리 순서")
+            )
     );
 }

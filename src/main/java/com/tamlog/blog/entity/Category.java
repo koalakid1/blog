@@ -1,9 +1,6 @@
 package com.tamlog.blog.entity;
 
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 
@@ -13,7 +10,6 @@ import javax.persistence.*;
 @Getter
 @ToString
 @Entity
-@DynamicUpdate
 @Table(name = "category")
 public class Category {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,8 +19,14 @@ public class Category {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Generated(GenerationTime.INSERT)
     @Column(name = "priority", nullable = false)
     private Integer priority;
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updatePriority(Integer priority) {
+        this.priority = priority;
+    }
 }
