@@ -1,5 +1,7 @@
-package com.tamlog.blog.entity;
+package com.tamlog.blog.domain.reply;
 
+import com.tamlog.blog.domain.board.Board;
+import com.tamlog.blog.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;

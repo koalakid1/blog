@@ -2,9 +2,9 @@ package com.tamlog.blog.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tamlog.blog.dto.CategoryDto;
-import com.tamlog.blog.entity.Category;
-import com.tamlog.blog.repository.CategoryRepository;
+import com.tamlog.blog.api.dto.CategoryDto;
+import com.tamlog.blog.domain.board.Category;
+import com.tamlog.blog.domain.board.CategoryRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -111,6 +111,7 @@ class CategoryControllerTest extends BaseControllerTest {
                 .accept(MediaType.APPLICATION_JSON));
 
         //then
+
         result.andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name", Matchers.is("category9-update")))
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()

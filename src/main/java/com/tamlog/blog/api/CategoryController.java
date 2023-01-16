@@ -1,7 +1,7 @@
-package com.tamlog.blog.controller;
+package com.tamlog.blog.api;
 
-import com.tamlog.blog.dto.CategoryDto;
-import com.tamlog.blog.service.CategoryService;
+import com.tamlog.blog.api.dto.CategoryDto;
+import com.tamlog.blog.domain.board.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

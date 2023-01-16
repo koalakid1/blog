@@ -1,11 +1,11 @@
-package com.tamlog.blog.controller;
+package com.tamlog.blog.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
-public class UserController {
+public class ImageController {
 }

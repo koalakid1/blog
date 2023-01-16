@@ -1,5 +1,7 @@
-package com.tamlog.blog.entity;
+package com.tamlog.blog.domain.board;
 
+import com.tamlog.blog.domain.BaseTimeEntity;
+import com.tamlog.blog.domain.user.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "board")
-public class Board {
+public class Board extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "board_id", nullable = false)

@@ -1,6 +1,6 @@
-package com.tamlog.blog.dto;
+package com.tamlog.blog.api.dto;
 
-import com.tamlog.blog.entity.Category;
+import com.tamlog.blog.domain.board.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

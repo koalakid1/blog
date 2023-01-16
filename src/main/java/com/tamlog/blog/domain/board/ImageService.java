@@ -1,4 +1,4 @@
-package com.tamlog.blog.service;
+package com.tamlog.blog.domain.board;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

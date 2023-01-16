@@ -1,4 +1,4 @@
-package com.tamlog.blog.controller;
+package com.tamlog.blog.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

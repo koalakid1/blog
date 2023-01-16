@@ -1,8 +1,6 @@
-package com.tamlog.blog.service;
+package com.tamlog.blog.domain.board;
 
-import com.tamlog.blog.dto.CategoryDto;
-import com.tamlog.blog.entity.Category;
-import com.tamlog.blog.repository.CategoryRepository;
+import com.tamlog.blog.api.dto.CategoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

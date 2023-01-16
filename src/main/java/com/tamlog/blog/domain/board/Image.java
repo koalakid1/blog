@@ -1,4 +1,4 @@
-package com.tamlog.blog.entity;
+package com.tamlog.blog.domain.board;
 
 import lombok.*;
 
