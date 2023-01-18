@@ -1,37 +1,26 @@
-CREATE SEQUENCE IF NOT EXISTS user_id_seq START WITH 1 INCREMENT BY 1;
-
-CREATE TABLE if not exists "user"
-(
-    user_id  BIGINT      NOT NULL default nextval('user_id_seq'),
+CREATE TABLE if not exists "user" (
+    user_id  bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     email    VARCHAR(40),
-    name VARCHAR(15) NOT NULL,
+    password varchar,
+    nickname VARCHAR(15) NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE,
+    update_at   TIMESTAMP WITHOUT TIME ZONE,
     role    VARCHAR(10) NOT NULL,
-    path     VARCHAR(200),
-    CONSTRAINT pk_user PRIMARY KEY (user_id)
+    path     VARCHAR(200)
 );
 
-alter user_id_seq owned by user.user_id;
+CREATE SEQUENCE if not exists category_priority_seq;
 
-CREATE SEQUENCE IF NOT EXISTS category_id_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE IF NOT EXISTS category_priority_seq START WITH 1 INCREMENT BY 1;
-
-CREATE TABLE if not exists category
-(
-    category_id BIGINT      NOT NULL default nextval('category_id_seq'),
+CREATE TABLE if not exists category (
+    category_id bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     name        VARCHAR(50) NOT NULL,
-    priority    INTEGER     NOT NULL default nextval('category_priority_seq'),
-    CONSTRAINT pk_category PRIMARY KEY (category_id)
+    priority    integer not null default nextval('category_priority_seq')
 );
 
-alter category_id_seq owned by category.category_id;
-alter category_priority_seq owned by category.priority;
+alter sequence category_priority_seq owned by category.priority;
 
-
-CREATE SEQUENCE IF NOT EXISTS board_id_seq START WITH 1 INCREMENT BY 1;
-
-CREATE TABLE if not exists board
-(
-    board_id          BIGINT       NOT NULL default nextval('board_id_seq'),
+CREATE TABLE if not exists board (
+    board_id   bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     title       VARCHAR(200) NOT NULL,
     content     TEXT         NOT NULL,
     hit         INTEGER,
@@ -39,11 +28,8 @@ CREATE TABLE if not exists board
     created_at  TIMESTAMP WITHOUT TIME ZONE,
     update_at   TIMESTAMP WITHOUT TIME ZONE,
     category_id BIGINT,
-    user_id     BIGINT,
-    CONSTRAINT pk_board PRIMARY KEY (board_id)
+    user_id     BIGINT
 );
-
-alter board_id_seq owned by board.board_id;
 
 ALTER TABLE board
     ADD CONSTRAINT FK_BOARD_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES category (category_id);
@@ -51,34 +37,26 @@ ALTER TABLE board
 ALTER TABLE board
     ADD CONSTRAINT FK_BOARD_ON_USER FOREIGN KEY (user_id) REFERENCES "user" (user_id);
 
-CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START WITH 1 INCREMENT BY 1;
-
-CREATE TABLE if not exists image
-(
-    image_id BIGINT       NOT NULL,
+CREATE TABLE if not exists image (
+    image_id bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     name     VARCHAR(100) NOT NULL,
     path     VARCHAR(100) NOT NULL,
-    board_id BIGINT,
-    CONSTRAINT pk_image PRIMARY KEY (image_id)
+    board_id BIGINT
 );
 
 ALTER TABLE image
     ADD CONSTRAINT FK_IMAGE_ON_BOARD FOREIGN KEY (board_id) REFERENCES board (board_id);
 
-CREATE SEQUENCE IF NOT EXISTS reply_id_seq START WITH 1 INCREMENT BY 1;
 
-CREATE TABLE if not exists reply
-(
-    reply_id   BIGINT       NOT NULL default nextval('reply_id_seq'),
+CREATE TABLE if not exists reply (
+    reply_id   bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     content    VARCHAR(100) NOT NULL,
     create_at  TIMESTAMP WITHOUT TIME ZONE,
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     board_id   BIGINT,
-    user_id    BIGINT,
-    CONSTRAINT pk_reply PRIMARY KEY (reply_id)
+    user_id    BIGINT
 );
 
-alter reply_id_seq owned by reply.reply_id;
 
 ALTER TABLE reply
     ADD CONSTRAINT FK_REPLY_ON_BOARD FOREIGN KEY (board_id) REFERENCES board (board_id);

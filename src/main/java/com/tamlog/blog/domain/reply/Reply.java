@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "reply")
 public class Reply {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id", nullable = false)
     private Long id;
 

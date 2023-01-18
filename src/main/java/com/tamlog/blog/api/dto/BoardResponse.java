@@ -34,7 +34,7 @@ public class BoardResponse {
         this.hit = entity.getHit();
         this.like = entity.getLike();
         this.createdAt = entity.getCreatedAt();
-        this.updateAt = entity.getUpdateAt();
+        this.updateAt = entity.getUpdatedAt();
         this.category = entity.getCategory();
         this.user = entity.getUser();
     }

@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "board")
 public class Board extends BaseTimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id", nullable = false)
     private Long id;
 
@@ -36,12 +35,6 @@ public class Board extends BaseTimeEntity {
     @Column(name = "like")
     private Integer like;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "update_at")
-    private LocalDateTime updateAt;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -49,4 +42,9 @@ public class Board extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void update(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 }

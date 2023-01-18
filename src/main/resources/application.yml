@@ -7,8 +7,8 @@ spring:
     baseline-on-migrate: true          # flyway_schema_history 테이블을 자동으로 생성할지 여부
     baseline-version: 0                # 최초 버전 정보
   datasource:
-    username: ${backend_username}
-    password: ${backend_password}
+    username: ${backend_datasource_username}
+    password: ${backend_datasource_password}
     url: ${backend_url}
   jpa:
     show-sql: true
@@ -17,3 +17,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB  #최대 파일 사이즈 설정
+#      max-request-size: 150MB #최대 request 사이즈 설정
+
+jwt:
+  secret: ${backend_jwt_secret}
