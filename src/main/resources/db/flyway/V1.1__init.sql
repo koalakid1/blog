@@ -9,12 +9,10 @@ CREATE TABLE if not exists "user" (
     path     VARCHAR(200)
 );
 
-CREATE SEQUENCE if not exists category_priority_seq;
-
 CREATE TABLE if not exists category (
     category_id bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     name        VARCHAR(50) NOT NULL,
-    priority    integer not null default nextval('category_priority_seq')
+    priority    integer not null
 );
 
 alter sequence category_priority_seq owned by category.priority;
@@ -23,8 +21,8 @@ CREATE TABLE if not exists board (
     board_id   bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     title       VARCHAR(200) NOT NULL,
     content     TEXT         NOT NULL,
-    hit         INTEGER,
-    "like"      INTEGER,
+    hit         INTEGER DEFAULT 0,
+    "like"      INTEGER DEFAULT 0,
     created_at  TIMESTAMP WITHOUT TIME ZONE,
     update_at   TIMESTAMP WITHOUT TIME ZONE,
     category_id BIGINT,

@@ -4,6 +4,7 @@ import com.tamlog.blog.domain.BaseTimeEntity;
 import com.tamlog.blog.domain.user.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @ToString
 @Entity
+@DynamicInsert
 @Table(name = "board")
 public class Board extends BaseTimeEntity {
     @Id
@@ -28,11 +30,11 @@ public class Board extends BaseTimeEntity {
     private String content;
 
     @ColumnDefault("0")
-    @Column(name = "hit")
+    @Column(name = "hit", insertable = false)
     private Integer hit;
 
     @ColumnDefault("0")
-    @Column(name = "like")
+    @Column(name = "like", insertable = false)
     private Integer like;
 
     @ManyToOne
