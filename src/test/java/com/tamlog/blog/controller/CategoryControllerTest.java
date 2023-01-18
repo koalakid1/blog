@@ -2,6 +2,7 @@ package com.tamlog.blog.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.dto.CategoryDto;
 import com.tamlog.blog.domain.board.Category;
 import com.tamlog.blog.domain.board.CategoryRepository;
@@ -42,7 +43,7 @@ class CategoryControllerTest extends BaseControllerTest {
     @BeforeEach
     void setUp() {
         for (int i = 1; i < 10; i++) {
-            var category = new Category((long) i, "category" + i, i);
+            var category = new Category((long) i, "category" + i, null);
             categoryRepository.save(category);
         }
         updateCategory.put("id", 9l);
@@ -53,6 +54,7 @@ class CategoryControllerTest extends BaseControllerTest {
 
 
     @Test
+    @WithMockCustomUser
     @DisplayName(value = "모든 카테고리 리스트 가져오는지 테스트")
     void getCategoriesTest() throws Exception {
         // when
@@ -74,6 +76,7 @@ class CategoryControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @WithMockCustomUser
     @DisplayName(value = "카테고리 추가 성공")
     void postCategoryTest() throws Exception {
         // given
@@ -98,11 +101,12 @@ class CategoryControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @WithMockCustomUser
     @DisplayName(value = "이름만 데이터로 들어왔을 때, 이름 정보만 업데이트 되는지 테스트")
     void updateCategoryNameTest() throws Exception {
         //given
         HashMap<String, Object> request = new HashMap<>();
-        request.put("name", "category9-update");
+        request.put("name", "category11-update");
 
         //when
         var result = mockMvc.perform(patch("/api/categories/{category_id}/name", 9l)
@@ -113,7 +117,7 @@ class CategoryControllerTest extends BaseControllerTest {
         //then
 
         result.andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name", Matchers.is("category9-update")))
+                .andExpect(jsonPath("$.name", Matchers.is(request.get("name"))))
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
                         .summary("카테고리를 업데이트합니다.")
                         .description("카테고리를 업데이트합니다.")
@@ -130,6 +134,7 @@ class CategoryControllerTest extends BaseControllerTest {
     }
 
     @Test
+    @WithMockCustomUser
     @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정")
     void updateCategoryPriorityTest() throws Exception {
         HashMap<String, Object> request = new HashMap<>();
