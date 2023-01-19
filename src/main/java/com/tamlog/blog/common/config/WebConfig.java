@@ -1,4 +1,4 @@
-package com.tamlog.blog.config;
+package com.tamlog.blog.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

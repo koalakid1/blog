@@ -1,4 +1,4 @@
-package com.tamlog.blog.config.jwt;
+package com.tamlog.blog.common.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

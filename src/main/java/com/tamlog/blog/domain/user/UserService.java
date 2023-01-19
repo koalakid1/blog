@@ -1,7 +1,9 @@
 package com.tamlog.blog.domain.user;
 
 import com.tamlog.blog.api.dto.UserChangePasswordRequest;
-import com.tamlog.blog.config.SecurityUtil;
+import com.tamlog.blog.common.exception.CustomException;
+import com.tamlog.blog.common.exception.ErrorCode;
+import com.tamlog.blog.common.util.SecurityUtil;
 import com.tamlog.blog.domain.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,6 +47,6 @@ public class UserService {
 
     private User findBySecurity() {
         return userRepository.findById(SecurityUtil.getCurrentUserId())
-                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
     }
 }

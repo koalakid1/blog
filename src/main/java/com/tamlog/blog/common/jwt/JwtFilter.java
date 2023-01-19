@@ -1,4 +1,4 @@
-package com.tamlog.blog.config.jwt;
+package com.tamlog.blog.common.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

@@ -1,9 +1,9 @@
-package com.tamlog.blog.config;
+package com.tamlog.blog.common.config;
 
-import com.tamlog.blog.config.jwt.JwtAccessDeniedHandler;
-import com.tamlog.blog.config.jwt.JwtAuthenticationEntryPoint;
-import com.tamlog.blog.config.jwt.JwtFilter;
-import com.tamlog.blog.config.jwt.TokenProvider;
+import com.tamlog.blog.common.jwt.JwtAccessDeniedHandler;
+import com.tamlog.blog.common.jwt.JwtAuthenticationEntryPoint;
+import com.tamlog.blog.common.jwt.JwtFilter;
+import com.tamlog.blog.common.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

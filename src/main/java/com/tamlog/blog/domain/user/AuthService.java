@@ -1,7 +1,7 @@
 package com.tamlog.blog.domain.user;
 
 import com.tamlog.blog.api.dto.UserRequest;
-import com.tamlog.blog.config.jwt.TokenProvider;
+import com.tamlog.blog.common.jwt.TokenProvider;
 import com.tamlog.blog.domain.user.dto.TokenResponse;
 import com.tamlog.blog.domain.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.tamlog.blog.config.jwt;
+package com.tamlog.blog.common.jwt;
 
 import com.tamlog.blog.domain.user.dto.TokenResponse;
 import io.jsonwebtoken.*;
