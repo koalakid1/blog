@@ -8,4 +8,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByPriorityGreaterThanEqualAndPriorityLessThan(Integer updatePriority, Integer priority);
 
     List<Category> findByPriorityGreaterThanAndPriorityLessThanEqual(Integer priority, Integer updatePriority);
+
+    List<Category> findByPriorityGreaterThanEqual(Integer priority);
 }

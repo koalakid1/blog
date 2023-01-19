@@ -43,7 +43,7 @@ class CategoryControllerTest extends BaseControllerTest {
     @BeforeEach
     void setUp() {
         for (int i = 1; i < 10; i++) {
-            var category = new Category((long) i, "category" + i, null);
+            var category = new Category((long) i, "category" + i, i);
             categoryRepository.save(category);
         }
         updateCategory.put("id", 9l);
