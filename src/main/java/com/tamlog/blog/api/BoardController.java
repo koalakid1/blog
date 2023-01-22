@@ -1,15 +1,16 @@
 package com.tamlog.blog.api;
 
-import com.tamlog.blog.api.dto.BoardResponse;
 import com.tamlog.blog.api.dto.BoardSaveRequest;
 import com.tamlog.blog.api.dto.BoardUpdateReqeust;
 import com.tamlog.blog.domain.board.BoardService;
+import com.tamlog.blog.domain.board.dto.BoardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,13 +28,19 @@ public class BoardController {
         return new ResponseEntity<>(boardService.save(request), HttpStatus.OK);
     }
 
-    @GetMapping("/{board_id}")
-    public ResponseEntity<BoardResponse> findById(@PathVariable Long board_id) {
-        return new ResponseEntity<>(boardService.findById(board_id), HttpStatus.OK);
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> findById(@PathVariable Long boardId) {
+        return new ResponseEntity<>(boardService.findById(boardId), HttpStatus.OK);
     }
 
-    @PutMapping("/{board_id}")
-    public ResponseEntity<BoardResponse> update(@PathVariable Long board_id, @RequestBody BoardUpdateReqeust request) {
-        return ResponseEntity.ok(boardService.update(board_id, request));
+    @PutMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> update(@PathVariable Long boardId, @RequestBody BoardUpdateReqeust request) {
+        return ResponseEntity.ok(boardService.update(boardId, request));
+    }
+
+    @PutMapping("/{boardId}/category")
+    public ResponseEntity<BoardResponse> updateCategory(@PathVariable Long boardId, @RequestBody Map<String, Long> categoryId) {
+
+        return ResponseEntity.ok(boardService.updateCategory(boardId, categoryId.get("categoryId")));
     }
 }

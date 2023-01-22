@@ -11,11 +11,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "user", schema = "public")
-public class User extends BaseTimeEntity {
+@Table(name = "account")
+public class Account extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "account_id", nullable = false)
     private Long id;
 
     @Column(name = "email", length = 40)
@@ -35,7 +35,7 @@ public class User extends BaseTimeEntity {
     private String path;
 
     @Builder
-    public User(Long id, String email, String password, String nickname, Role role, String path) {
+    public Account(Long id, String email, String password, String nickname, Role role, String path) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -44,7 +44,7 @@ public class User extends BaseTimeEntity {
         this.path = path;
     }
 
-    public User update(String nickname, String path) {
+    public Account update(String nickname, String path) {
         this.nickname = nickname;
         this.path = path;
 

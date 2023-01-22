@@ -1,9 +1,9 @@
 package com.tamlog.blog.domain.user;
 
-import com.tamlog.blog.api.dto.UserRequest;
+import com.tamlog.blog.api.dto.AccountRequest;
 import com.tamlog.blog.common.jwt.TokenProvider;
+import com.tamlog.blog.domain.user.dto.AccountResponse;
 import com.tamlog.blog.domain.user.dto.TokenResponse;
-import com.tamlog.blog.domain.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,20 +18,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final AuthenticationManagerBuilder managerBuilder;
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
-    public UserResponse signup(UserRequest userRequest) {
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
+    public AccountResponse signup(AccountRequest accountRequest) {
+        if (accountRepository.existsByEmail(accountRequest.getEmail())) {
             throw new RuntimeException("이미 가입된 유저입니다.");
         }
 
-        return UserResponse.of(userRepository.save(userRequest.toEntity(passwordEncoder)));
+        return AccountResponse.of(accountRepository.save(accountRequest.toEntity(passwordEncoder)));
     }
 
-    public TokenResponse login(UserRequest userRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = userRequest.toAuthentication();
+    public TokenResponse login(AccountRequest accountRequest) {
+        UsernamePasswordAuthenticationToken authenticationToken = accountRequest.toAuthentication();
 
         Authentication authenticate = managerBuilder.getObject().authenticate(authenticationToken);
 

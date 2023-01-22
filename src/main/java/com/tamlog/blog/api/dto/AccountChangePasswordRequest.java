@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserChangePasswordRequest {
+public class AccountChangePasswordRequest {
     private String email;
     private String exPassword;
     private String newPassword;

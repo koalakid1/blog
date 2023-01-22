@@ -1,8 +1,9 @@
 package com.tamlog.blog.domain.board;
 
-import com.tamlog.blog.api.dto.CategoryDto;
+import com.tamlog.blog.api.dto.CategoryRequest;
 import com.tamlog.blog.common.exception.CustomException;
 import com.tamlog.blog.common.exception.ErrorCode;
+import com.tamlog.blog.domain.board.dto.CategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,34 +17,34 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public CategoryDto.Response postCategory(CategoryDto.Request request) {
+    public CategoryResponse postCategory(CategoryRequest request) {
         List<Category> categories = categoryRepository.findByPriorityGreaterThanEqual(request.getPriority());
         categories.forEach(c -> c.updatePriority(c.getPriority() + 1));
 
         var category = categoryRepository.save(request.toEntity());
 
-        return CategoryDto.Response.of(category);
+        return CategoryResponse.of(category);
     }
 
-    public List<CategoryDto.Response> getCategories() {
+    public List<CategoryResponse> getCategories() {
         var categories = categoryRepository.findAll();
 
         return categories.stream()
-                .map(CategoryDto.Response::of)
+                .map(CategoryResponse::of)
                 .toList();
     }
 
     @Transactional
-    public CategoryDto.Response updateCategoryName(Long categoryId, String updateName) {
+    public CategoryResponse updateCategoryName(Long categoryId, String updateName) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
         category.updateName(updateName);
 
-        return CategoryDto.Response.of(category);
+        return CategoryResponse.of(category);
     }
 
     @Transactional
-    public CategoryDto.Response updateCategoryPriority(Long categoryId, Integer updatePriority) {
+    public CategoryResponse updateCategoryPriority(Long categoryId, Integer updatePriority) {
         var category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
 
@@ -59,7 +60,7 @@ public class CategoryService {
         }
         category.updatePriority(updatePriority);
 
-        return CategoryDto.Response.of(category);
+        return CategoryResponse.of(category);
     }
 
     @Transactional

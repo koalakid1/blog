@@ -1,7 +1,7 @@
 package com.tamlog.blog.api.dto;
 
+import com.tamlog.blog.domain.user.Account;
 import com.tamlog.blog.domain.user.Role;
-import com.tamlog.blog.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,14 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRequest {
+public class AccountRequest {
     private String email;
     private String password;
     private String nickname;
     private String path;
 
-    public User toEntity(PasswordEncoder passwordEncoder) {
-        return User.builder()
+    public Account toEntity(PasswordEncoder passwordEncoder) {
+        return Account.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .nickname(nickname)

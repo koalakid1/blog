@@ -1,7 +1,8 @@
 package com.tamlog.blog.api;
 
-import com.tamlog.blog.api.dto.CategoryDto;
+import com.tamlog.blog.api.dto.CategoryRequest;
 import com.tamlog.blog.domain.board.CategoryService;
+import com.tamlog.blog.domain.board.dto.CategoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,36 +18,36 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto.Response>> getCategories() {
+    public ResponseEntity<List<CategoryResponse>> getCategories() {
         var categories = categoryService.getCategories();
 
         return ResponseEntity.ok(categories);
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDto.Response> postCategory(@RequestBody CategoryDto.Request request) {
+    public ResponseEntity<CategoryResponse> postCategory(@RequestBody CategoryRequest request) {
         var category = categoryService.postCategory(request);
 
         return ResponseEntity.ok(category);
     }
 
-    @PatchMapping("/{category_id}/name")
-    public ResponseEntity<CategoryDto.Response> updateCategoryName(@PathVariable Long category_id, @RequestBody Map<String, String> name) {
-        var response = categoryService.updateCategoryName(category_id, name.get("name"));
+    @PatchMapping("/{categoryId}/name")
+    public ResponseEntity<CategoryResponse> updateCategoryName(@PathVariable Long categoryId, @RequestBody Map<String, String> name) {
+        var response = categoryService.updateCategoryName(categoryId, name.get("name"));
 
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{category_id}/priority")
-    public ResponseEntity<CategoryDto.Response> updateCategoryPriority(@PathVariable Long category_id, @RequestBody Map<String, Integer> priority) {
-        var response = categoryService.updateCategoryPriority(category_id, priority.get("priority"));
+    @PatchMapping("/{categoryId}/priority")
+    public ResponseEntity<CategoryResponse> updateCategoryPriority(@PathVariable Long categoryId, @RequestBody Map<String, Integer> priority) {
+        var response = categoryService.updateCategoryPriority(categoryId, priority.get("priority"));
 
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{category_id}")
-    public ResponseEntity<Object> deleteCategory(@PathVariable Long category_id) {
-        categoryService.deleteCategory(category_id);
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Object> deleteCategory(@PathVariable Long categoryId) {
+        categoryService.deleteCategory(categoryId);
 
         return ResponseEntity.ok().build();
     }

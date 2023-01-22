@@ -2,12 +2,10 @@ package com.tamlog.blog.api.dto;
 
 import com.tamlog.blog.domain.board.Board;
 import com.tamlog.blog.domain.board.Category;
-import com.tamlog.blog.domain.user.User;
+import com.tamlog.blog.domain.user.Account;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -16,28 +14,28 @@ public class BoardSaveRequest {
 
     private String content;
 
-    private Integer hit;
-
-    private Integer like;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updateAt;
-
-    private Category category;
-
-    private User user;
+    private String categoryName;
 
     @Builder
-    public BoardSaveRequest(String title, String content) {
+    public BoardSaveRequest(String title, String content, String categoryName) {
         this.title = title;
         this.content = content;
+        this.categoryName = categoryName;
     }
 
     public Board toEntity() {
         return Board.builder()
                 .title(title)
                 .content(content)
+                .build();
+    }
+
+    public Board toEntity(Category category, Account account) {
+        return Board.builder()
+                .title(title)
+                .content(content)
+                .category(category)
+                .account(account)
                 .build();
     }
 }

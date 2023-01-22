@@ -13,7 +13,7 @@ public class SecurityUtil {
         if(authentication == null || authentication.getName() == null) {
             throw new RuntimeException("Security context에 인증정보가 없습니다.");
         }
-
+        System.out.println(authentication.getName());
         return Long.parseLong(authentication.getName());
     }
 }

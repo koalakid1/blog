@@ -27,7 +27,7 @@ Setting `compilerOptions.types` shuts out all other types not explicitly listed 
 
 **Why include `.vscode/extensions.json`?**
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the account to install the recommended extension upon opening the project.
 
 **Why enable `allowJs` in the TS template?**
 

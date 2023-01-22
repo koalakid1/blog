@@ -1,6 +1,6 @@
 package com.tamlog.blog.domain.user.dto;
 
-import com.tamlog.blog.domain.user.User;
+import com.tamlog.blog.domain.user.Account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+public class AccountResponse {
     private String email;
     private String nickname;
 
-    public static UserResponse of(User user) {
-        return UserResponse.builder()
-                .email(user.getEmail())
-                .nickname(user.getNickname())
+    public static AccountResponse of(Account account) {
+        return AccountResponse.builder()
+                .email(account.getEmail())
+                .nickname(account.getNickname())
                 .build();
     }
 }

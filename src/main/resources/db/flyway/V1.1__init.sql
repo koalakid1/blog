@@ -1,5 +1,5 @@
-CREATE TABLE if not exists "user" (
-    user_id  bigint not null GENERATED ALWAYS AS IDENTITY primary key,
+CREATE TABLE if not exists account (
+    account_id  bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     email    VARCHAR(40),
     password varchar,
     nickname VARCHAR(15) NOT NULL,
@@ -15,25 +15,23 @@ CREATE TABLE if not exists category (
     priority    integer not null
 );
 
-alter sequence category_priority_seq owned by category.priority;
-
 CREATE TABLE if not exists board (
     board_id   bigint not null GENERATED ALWAYS AS IDENTITY primary key,
     title       VARCHAR(200) NOT NULL,
     content     TEXT         NOT NULL,
-    hit         INTEGER DEFAULT 0,
-    "like"      INTEGER DEFAULT 0,
+    hit_cnt    INTEGER DEFAULT 0,
+    like_cnt      INTEGER DEFAULT 0,
     created_at  TIMESTAMP WITHOUT TIME ZONE,
     update_at   TIMESTAMP WITHOUT TIME ZONE,
     category_id BIGINT,
-    user_id     BIGINT
+    account_id     BIGINT
 );
 
 ALTER TABLE board
     ADD CONSTRAINT FK_BOARD_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES category (category_id);
 
 ALTER TABLE board
-    ADD CONSTRAINT FK_BOARD_ON_USER FOREIGN KEY (user_id) REFERENCES "user" (user_id);
+    ADD CONSTRAINT FK_BOARD_ON_USER FOREIGN KEY (account_id) REFERENCES account (account_id);
 
 CREATE TABLE if not exists image (
     image_id bigint not null GENERATED ALWAYS AS IDENTITY primary key,
@@ -52,7 +50,7 @@ CREATE TABLE if not exists reply (
     create_at  TIMESTAMP WITHOUT TIME ZONE,
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     board_id   BIGINT,
-    user_id    BIGINT
+    account_id    BIGINT
 );
 
 
@@ -60,4 +58,4 @@ ALTER TABLE reply
     ADD CONSTRAINT FK_REPLY_ON_BOARD FOREIGN KEY (board_id) REFERENCES board (board_id);
 
 ALTER TABLE reply
-    ADD CONSTRAINT FK_REPLY_ON_USER FOREIGN KEY (user_id) REFERENCES "user" (user_id);
+    ADD CONSTRAINT FK_REPLY_ON_USER FOREIGN KEY (account_id) REFERENCES account (account_id);

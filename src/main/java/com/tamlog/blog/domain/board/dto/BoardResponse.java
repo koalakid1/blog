@@ -1,8 +1,7 @@
-package com.tamlog.blog.api.dto;
+package com.tamlog.blog.domain.board.dto;
 
 import com.tamlog.blog.domain.board.Board;
-import com.tamlog.blog.domain.board.Category;
-import com.tamlog.blog.domain.user.User;
+import com.tamlog.blog.domain.user.dto.AccountResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -20,12 +19,12 @@ public class BoardResponse {
 
     private LocalDateTime createdAt;
 
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     // TODO : dto로 변환
-    private Category category;
+    private CategoryResponse category;
 
-    private User user;
+    private AccountResponse account;
 
     public BoardResponse(Board entity) {
         this.id = entity.getId();
@@ -34,8 +33,8 @@ public class BoardResponse {
         this.hit = entity.getHit();
         this.like = entity.getLike();
         this.createdAt = entity.getCreatedAt();
-        this.updateAt = entity.getUpdatedAt();
-        this.category = entity.getCategory();
-        this.user = entity.getUser();
+        this.updatedAt = entity.getUpdatedAt();
+        this.category = CategoryResponse.of(entity.getCategory());
+        this.account = AccountResponse.of(entity.getAccount());
     }
 }

@@ -1,7 +1,7 @@
 package com.tamlog.blog.domain.board;
 
 import com.tamlog.blog.domain.BaseTimeEntity;
-import com.tamlog.blog.domain.user.User;
+import com.tamlog.blog.domain.user.Account;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -30,23 +30,29 @@ public class Board extends BaseTimeEntity {
     private String content;
 
     @ColumnDefault("0")
-    @Column(name = "hit", insertable = false)
-    private Integer hit;
+    @Builder.Default()
+    @Column(name = "hit_cnt", insertable = false)
+    private Integer hit = 0;
 
     @ColumnDefault("0")
-    @Column(name = "like", insertable = false)
-    private Integer like;
+    @Builder.Default()
+    @Column(name = "like_cnt", insertable = false)
+    private Integer like = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public void update(String title, String content){
         this.title = title;
         this.content = content;
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
     }
 }

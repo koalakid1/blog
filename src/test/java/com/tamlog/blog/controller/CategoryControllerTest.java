@@ -1,9 +1,8 @@
 package com.tamlog.blog.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tamlog.blog.annotations.WithMockCustomUser;
-import com.tamlog.blog.api.dto.CategoryDto;
+import com.tamlog.blog.api.dto.CategoryRequest;
 import com.tamlog.blog.domain.board.Category;
 import com.tamlog.blog.domain.board.CategoryRepository;
 import org.hamcrest.Matchers;
@@ -13,16 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.tamlog.blog.utils.FieldsUtils.CATEGORY_REQUEST_FIELDS;
+import static com.tamlog.blog.utils.FieldsUtils.CATEGORY_RESPONSE_FIELDS;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.applyPathPrefix;
@@ -33,9 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CategoryControllerTest extends BaseControllerTest {
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private final Map<String, Object> postCategory = new HashMap<>();
     private final Map<String, Object> updateCategory = new HashMap<>();
@@ -56,7 +51,7 @@ class CategoryControllerTest extends BaseControllerTest {
     @Test
     @WithMockCustomUser
     @DisplayName(value = "모든 카테고리 리스트 가져오는지 테스트")
-    void getCategoriesTest() throws Exception {
+    void findAllTest() throws Exception {
         // when
         var result = mockMvc.perform(get("/api/categories")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,16 +66,16 @@ class CategoryControllerTest extends BaseControllerTest {
                         .responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
                         )
-                        .responseFields(applyPathPrefix("[]", RESPONSE_FIELDS))
+                        .responseFields(applyPathPrefix("[]", CATEGORY_RESPONSE_FIELDS))
                         .build())));
     }
 
     @Test
     @WithMockCustomUser
     @DisplayName(value = "카테고리 추가 성공")
-    void postCategoryTest() throws Exception {
+    void saveTest() throws Exception {
         // given
-        CategoryDto.Request category = new CategoryDto.Request(10l, "category10", 10);
+        CategoryRequest category = new CategoryRequest(10l, "category10", 10);
 
         // when
         var result = mockMvc.perform(post("/api/categories")
@@ -96,7 +91,8 @@ class CategoryControllerTest extends BaseControllerTest {
                         .responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
                         )
-                        .responseFields(RESPONSE_FIELDS)
+                        .requestFields(CATEGORY_REQUEST_FIELDS)
+                        .responseFields(CATEGORY_RESPONSE_FIELDS)
                         .build())));
     }
 
@@ -127,7 +123,7 @@ class CategoryControllerTest extends BaseControllerTest {
                         .requestFields(fieldWithPath("name")
                                 .type(JsonFieldType.STRING)
                                 .description("카테고리 이름"))
-                        .responseFields(RESPONSE_FIELDS)
+                        .responseFields(CATEGORY_RESPONSE_FIELDS)
                         .build())));
 
         System.out.println(categoryRepository.findById(9l).get().getName());
@@ -157,23 +153,7 @@ class CategoryControllerTest extends BaseControllerTest {
                         .requestFields(fieldWithPath("priority")
                                 .type(JsonFieldType.NUMBER)
                                 .description("카테고리 순서"))
-                        .responseFields(RESPONSE_FIELDS)
+                        .responseFields(CATEGORY_RESPONSE_FIELDS)
                         .build())));
     }
-
-    private static final List<FieldDescriptor> REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
-            List.of(
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
-                    fieldWithPath("name").type(JsonFieldType.STRING).description("카테고리 이름"),
-                    fieldWithPath("priority").type(JsonFieldType.NUMBER).description("카테고리 순서")
-            )
-    );
-
-    private static final List<FieldDescriptor> RESPONSE_FIELDS = new ArrayList<FieldDescriptor>(
-            List.of(
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
-                    fieldWithPath("name").type(JsonFieldType.STRING).description("카테고리 이름"),
-                    fieldWithPath("priority").type(JsonFieldType.NUMBER).description("카테고리 순서")
-            )
-    );
 }
