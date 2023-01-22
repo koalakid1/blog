@@ -1,11 +1,11 @@
 package com.tamlog.blog.domain.reply;
 
+import com.tamlog.blog.domain.BaseTimeEntity;
 import com.tamlog.blog.domain.board.Board;
-import com.tamlog.blog.domain.user.User;
+import com.tamlog.blog.domain.user.Account;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "reply")
-public class Reply {
+public class Reply extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id", nullable = false)
@@ -23,17 +23,11 @@ public class Reply {
     @Column(name = "content", nullable = false, length = 100)
     private String content;
 
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 }
