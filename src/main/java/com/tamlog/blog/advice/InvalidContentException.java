@@ -1,6 +1,5 @@
-package com.tamlog.blog.api.board.exception;
+package com.tamlog.blog.advice;
 
-import com.tamlog.blog.advice.BadRequestException;
 import com.tamlog.blog.api.board.domain.Content;
 
 import static com.tamlog.blog.support.ExceptionUtil.errorMessageConcat;

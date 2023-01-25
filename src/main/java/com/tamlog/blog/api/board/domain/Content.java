@@ -1,6 +1,6 @@
 package com.tamlog.blog.api.board.domain;
 
-import com.tamlog.blog.api.board.exception.InvalidContentException;
+import com.tamlog.blog.advice.InvalidContentException;
 import lombok.Getter;
 
 import javax.persistence.Column;

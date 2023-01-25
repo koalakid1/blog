@@ -52,7 +52,7 @@ class BoardControllerTest extends BaseControllerTest {
         category2 = categoryRepository.save(new Category(2l, "category2", 2));
         account = accountRepository.save(new Account(1l, "test@test.com", "", "test", Role.USER, ""));
         for (int i = 1; i < 3; i++) {
-            boards.add(boardRepository.save(new Board((long) i, "title" + i, "content" + i,0,0,category1, account)));
+            boards.add(boardRepository.save(new Board("title" + i, "content" + i,0,0,category1, account, new ArrayList<>())));
         }
     }
 
