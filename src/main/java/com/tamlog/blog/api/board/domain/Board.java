@@ -14,8 +14,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tamlog.blog.support.SecurityUtil.getCurrentAccountId;
-
 @Entity
 @Getter
 @DynamicInsert
@@ -67,18 +65,19 @@ public class Board extends BaseTimeEntity {
         this.replies = replies;
     }
 
-    public void update(String title, String content){
-        if (!this.account.getId().equals(getCurrentAccountId())) {
-            throw new UnauthorizedException();
-        }
+    public void update(String title, String content, Long currentAccountId){
+        validateAccount(currentAccountId);
         this.title = new Title(title);
         this.content = new Content(content);
     }
-    public void updateCategory(Category category) {
+    public void updateCategory(Category category, Long currentAccountId) {
+        validateAccount(currentAccountId);
         this.category = category;
     }
 
-    public void validateAccount() {
-
+    public void validateAccount(Long currentAccountId) {
+        if (!this.account.getId().equals(currentAccountId)) {
+            throw new UnauthorizedException();
+        }
     }
 }

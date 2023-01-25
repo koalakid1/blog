@@ -57,7 +57,7 @@ public class BoardService {
         var board = boardRepository.findById(id)
                 .orElseThrow(() -> new BoardNotFoundException(EXCEPTION_ID, id));
 
-        board.update(request.getTitle(), request.getContent());
+        board.update(request.getTitle(), request.getContent(), getCurrentAccountId());
 
         return new BoardResponse(board);
     }
@@ -70,7 +70,7 @@ public class BoardService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
 
-        board.updateCategory(category);
+        board.updateCategory(category, getCurrentAccountId());
 
         return new BoardResponse(board);
     }
