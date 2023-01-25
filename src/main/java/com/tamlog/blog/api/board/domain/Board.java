@@ -20,12 +20,11 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_id", nullable = false)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 200)
-    private String title;
+    @Embedded
+    private Title title;
 
-    @Lob
-    @Column(name = "content", nullable = false, columnDefinition = "text")
-    private String content;
+    @Embedded
+    private Content content;
 
     @ColumnDefault("0")
     @Builder.Default()
@@ -51,8 +50,8 @@ public class Board extends BaseTimeEntity {
     @Builder
     public Board(Long id, String title, String content, Integer hit, Integer like, Category category, Account account) {
         this.id = id;
-        this.title = title;
-        this.content = content;
+        this.title = new Title(title);
+        this.content = new Content(content);
         this.hit = hit;
         this.like = like;
         this.category = category;
@@ -60,8 +59,8 @@ public class Board extends BaseTimeEntity {
     }
 
     public void update(String title, String content){
-        this.title = title;
-        this.content = content;
+        this.title = new Title(title);
+        this.content = new Content(content);
     }
 
     public void updateCategory(Category category) {

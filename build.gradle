@@ -65,6 +65,9 @@ dependencies {
     //json
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 }
 

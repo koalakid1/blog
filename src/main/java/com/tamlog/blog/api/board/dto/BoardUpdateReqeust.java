@@ -1,13 +1,21 @@
 package com.tamlog.blog.api.board.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BoardUpdateReqeust {
+    @NotBlank(message = "제목이 없습니다.")
     String title;
+    @NotBlank(message = "본문이 없습니다.")
     String content;
+
+    public BoardUpdateReqeust() {
+    }
+
+    public BoardUpdateReqeust(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

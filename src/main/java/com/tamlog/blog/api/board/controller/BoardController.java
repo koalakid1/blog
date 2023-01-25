@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BoardResponse> save(@RequestBody BoardSaveRequest request) {
+    public ResponseEntity<BoardResponse> save(@Valid @RequestBody BoardSaveRequest request) {
         return new ResponseEntity<>(boardService.save(request), HttpStatus.OK);
     }
 
@@ -34,7 +35,7 @@ public class BoardController {
     }
 
     @PutMapping("/{boardId}")
-    public ResponseEntity<BoardResponse> update(@PathVariable Long boardId, @RequestBody BoardUpdateReqeust request) {
+    public ResponseEntity<BoardResponse> update(@PathVariable Long boardId,@Valid @RequestBody BoardUpdateReqeust request) {
         return ResponseEntity.ok(boardService.update(boardId, request));
     }
 

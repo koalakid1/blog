@@ -5,13 +5,15 @@ import com.tamlog.blog.api.board.domain.Board;
 import com.tamlog.blog.api.category.domain.Category;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 
 @Getter
-@NoArgsConstructor
 public class BoardSaveRequest {
+    @NotBlank(message = "제목이 없습니다.")
     private String title;
 
+    @NotBlank(message = "본문이 없습니다.")
     private String content;
 
     private String categoryName;

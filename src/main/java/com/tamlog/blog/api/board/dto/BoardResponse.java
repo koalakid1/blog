@@ -29,8 +29,8 @@ public class BoardResponse {
 
     public BoardResponse(Board entity) {
         this.id = entity.getId();
-        this.title = entity.getTitle();
-        this.content = entity.getContent();
+        this.title = entity.getTitle().getValue();
+        this.content = entity.getContent().getValue();
         this.hit = entity.getHit();
         this.like = entity.getLike();
         this.createdAt = entity.getCreatedAt();
