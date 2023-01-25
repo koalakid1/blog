@@ -1,16 +1,16 @@
 package com.tamlog.blog.api.account.service;
 
-import com.tamlog.blog.advice.CustomException;
-import com.tamlog.blog.advice.ErrorCode;
 import com.tamlog.blog.api.account.domain.Account;
 import com.tamlog.blog.api.account.dto.AccountChangePasswordRequest;
 import com.tamlog.blog.api.account.dto.AccountResponse;
+import com.tamlog.blog.api.account.exception.AccountNotFoundException;
 import com.tamlog.blog.api.account.repository.AccountRepository;
-import com.tamlog.blog.support.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.tamlog.blog.support.SecurityUtil.getCurrentUserId;
 
 
 @Service
@@ -48,7 +48,7 @@ public class AccountService {
     }
 
     private Account findBySecurity() {
-        return accountRepository.findById(SecurityUtil.getCurrentUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+        return accountRepository.findById(getCurrentUserId())
+                .orElseThrow(AccountNotFoundException::new);
     }
 }

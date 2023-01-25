@@ -1,22 +1,26 @@
 package com.tamlog.blog.api.board.service;
 
-import com.tamlog.blog.advice.CustomException;
-import com.tamlog.blog.advice.ErrorCode;
 import com.tamlog.blog.api.account.domain.Account;
+import com.tamlog.blog.api.account.exception.AccountNotFoundException;
 import com.tamlog.blog.api.account.repository.AccountRepository;
 import com.tamlog.blog.api.board.domain.Board;
 import com.tamlog.blog.api.board.dto.BoardResponse;
 import com.tamlog.blog.api.board.dto.BoardSaveRequest;
 import com.tamlog.blog.api.board.dto.BoardUpdateReqeust;
+import com.tamlog.blog.api.board.exception.BoardNotFoundException;
 import com.tamlog.blog.api.board.repository.BoardRepository;
 import com.tamlog.blog.api.category.domain.Category;
+import com.tamlog.blog.api.category.exception.CategoryNotFoundException;
 import com.tamlog.blog.api.category.repository.CategoryRepository;
-import com.tamlog.blog.support.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_ID;
+import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_NAME;
+import static com.tamlog.blog.support.SecurityUtil.getCurrentUserId;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +30,11 @@ public class BoardService {
     private final CategoryRepository categoryRepository;
     @Transactional
     public BoardResponse save(BoardSaveRequest request) {
-        Account account = accountRepository.findById(SecurityUtil.getCurrentUserId())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+        Account account = accountRepository.findById(getCurrentUserId())
+                .orElseThrow(AccountNotFoundException::new);
 
         Category category = categoryRepository.findByName(request.getCategoryName())
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST_PARAMETER));
+                .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_NAME, request.getCategoryName()));
 
         Board board = request.toEntity(category, account);
 
@@ -45,13 +49,13 @@ public class BoardService {
 
     public BoardResponse findById(Long id) {
         return new BoardResponse(boardRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST_PARAMETER)));
+                .orElseThrow(() -> new BoardNotFoundException(EXCEPTION_ID, id)));
     }
 
     @Transactional
     public BoardResponse update(Long id, BoardUpdateReqeust request) {
         var board = boardRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REQUEST_PARAMETER));
+                .orElseThrow(() -> new BoardNotFoundException(EXCEPTION_ID, id));
 
         board.update(request.getTitle(), request.getContent());
 
@@ -61,10 +65,10 @@ public class BoardService {
     @Transactional
     public BoardResponse updateCategory(Long boardId, Long categoryId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+                .orElseThrow(() -> new BoardNotFoundException(EXCEPTION_ID, boardId));
 
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+                .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
 
         board.updateCategory(category);
 

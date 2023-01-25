@@ -1,16 +1,17 @@
 package com.tamlog.blog.api.category.service;
 
-import com.tamlog.blog.advice.CustomException;
-import com.tamlog.blog.advice.ErrorCode;
 import com.tamlog.blog.api.category.domain.Category;
 import com.tamlog.blog.api.category.dto.CategoryRequest;
 import com.tamlog.blog.api.category.dto.CategoryResponse;
+import com.tamlog.blog.api.category.exception.CategoryNotFoundException;
 import com.tamlog.blog.api.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class CategoryService {
     @Transactional
     public CategoryResponse updateCategoryName(Long categoryId, String updateName) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+                .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
         category.updateName(updateName);
 
         return CategoryResponse.of(category);
@@ -48,7 +49,7 @@ public class CategoryService {
     @Transactional
     public CategoryResponse updateCategoryPriority(Long categoryId, Integer updatePriority) {
         var category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+                .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
 
         Integer priority = category.getPriority();
         assert priority != null;
@@ -67,7 +68,7 @@ public class CategoryService {
 
     @Transactional
     public void deleteCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_ID));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
         categoryRepository.findByPriorityGreaterThanEqual(category.getPriority())
                 .forEach(c -> c.updatePriority(c.getPriority() - 1));
 
