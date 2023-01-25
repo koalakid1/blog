@@ -40,7 +40,7 @@ public class TokenProvider {
 
 
     // 토큰 생성
-    public TokenResponse generateTokenDto(Authentication authentication) {
+    public TokenResponse generateAccessToken(Authentication authentication) {
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -94,6 +94,9 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
+    /**
+     * advice가 filter에서 체크할 수 없기 때문에 이렇게 직접 각각의 오류를 체크하는 부분을 넣어둬야함.
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

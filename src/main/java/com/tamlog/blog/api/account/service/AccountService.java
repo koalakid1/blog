@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.tamlog.blog.support.SecurityUtil.getCurrentUserId;
+import static com.tamlog.blog.support.SecurityUtil.getCurrentAccountId;
 
 
 @Service
@@ -48,7 +48,7 @@ public class AccountService {
     }
 
     private Account findBySecurity() {
-        return accountRepository.findById(getCurrentUserId())
+        return accountRepository.findById(getCurrentAccountId())
                 .orElseThrow(AccountNotFoundException::new);
     }
 }

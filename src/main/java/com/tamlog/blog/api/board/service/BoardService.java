@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_ID;
 import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_NAME;
-import static com.tamlog.blog.support.SecurityUtil.getCurrentUserId;
+import static com.tamlog.blog.support.SecurityUtil.getCurrentAccountId;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class BoardService {
     private final CategoryRepository categoryRepository;
     @Transactional
     public BoardResponse save(BoardSaveRequest request) {
-        Account account = accountRepository.findById(getCurrentUserId())
+        Account account = accountRepository.findById(getCurrentAccountId())
                 .orElseThrow(AccountNotFoundException::new);
 
         Category category = categoryRepository.findByName(request.getCategoryName())
