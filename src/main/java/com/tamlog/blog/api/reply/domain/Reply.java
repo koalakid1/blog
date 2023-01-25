@@ -3,15 +3,12 @@ package com.tamlog.blog.api.reply.domain;
 import com.tamlog.blog.api.account.domain.Account;
 import com.tamlog.blog.api.board.domain.Board;
 import com.tamlog.blog.support.BaseTimeEntity;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import javax.persistence.*;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@ToString
 @Entity
 @Table(name = "reply")
 public class Reply extends BaseTimeEntity {
@@ -20,8 +17,12 @@ public class Reply extends BaseTimeEntity {
     @Column(name = "reply_id", nullable = false)
     private Long id;
 
-    @Column(name = "content", nullable = false, length = 100)
-    private String content;
+    @Embedded
+    private Content content;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Reply parentReply;
 
     @ManyToOne
     @JoinColumn(name = "board_id")
@@ -30,4 +31,17 @@ public class Reply extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
+
+    protected Reply() {
+
+    }
+
+    @Builder
+    public Reply(Long id, String content, Reply parentReply, Board board, Account account) {
+        this.id = id;
+        this.content = new Content(content);
+        this.parentReply = parentReply;
+        this.board = board;
+        this.account = account;
+    }
 }
