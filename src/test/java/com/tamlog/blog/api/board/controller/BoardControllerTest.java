@@ -5,8 +5,7 @@ import com.tamlog.blog.api.account.domain.Account;
 import com.tamlog.blog.api.account.domain.Email;
 import com.tamlog.blog.api.account.domain.Role;
 import com.tamlog.blog.api.board.domain.Board;
-import com.tamlog.blog.api.board.dto.BoardSaveRequest;
-import com.tamlog.blog.api.board.dto.BoardUpdateReqeust;
+import com.tamlog.blog.api.board.dto.BoardRequest;
 import com.tamlog.blog.api.category.domain.Category;
 import com.tamlog.blog.utils.BaseControllerTest;
 import org.hamcrest.Matchers;
@@ -106,11 +105,11 @@ class BoardControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "모든 게시글을 가져오는지 테스트")
+    @DisplayName(value = "모든 게시글을 가져오기 성공")
     void findAllTest() throws Exception {
         // given
         // when
-        var result = mockMvc.perform(get("/api/boards")
+        var result = mockMvc.perform(get("/api/categories/{categoryId}/boards", category1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -130,10 +129,10 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 추가 성공")
     void saveTest() throws Exception {
         // given
-        BoardSaveRequest request = new BoardSaveRequest("newTitle", "newContent", "category1");
+        BoardRequest request = new BoardRequest("newTitle", "newContent");
 
         // when
-        var result = mockMvc.perform(post("/api/boards")
+        var result = mockMvc.perform(post("/api/categories/{categoryId}/boards", category1.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -143,7 +142,7 @@ class BoardControllerTest extends BaseControllerTest {
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .summary("게시글을 새로 등록합니다.")
                         .description("게시글을 새로 등록합니다.")
-                        .requestFields(BOARD_SAVE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(BOARD_RESPONSE_FIELDS)
                         .build())));
     }
@@ -153,10 +152,10 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 제목이 없어서 추가 실패")
     void saveTitleFailTest() throws Exception {
         // given
-        BoardSaveRequest request = new BoardSaveRequest("", "newContent", "category1");
+        BoardRequest request = new BoardRequest("", "newContent");
 
         // when
-        var result = mockMvc.perform(post("/api/boards")
+        var result = mockMvc.perform(post("/api/categories/{categoryId}/boards", category1.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -164,7 +163,7 @@ class BoardControllerTest extends BaseControllerTest {
         //then
         result.andExpect(status().is4xxClientError())
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(BOARD_SAVE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }
@@ -174,10 +173,10 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 본문이 없어서 추가 실패")
     void saveContentFailTest() throws Exception {
         // given
-        BoardSaveRequest request = new BoardSaveRequest("newTitle", "", "category1");
+        BoardRequest request = new BoardRequest("newTitle", "");
 
         // when
-        var result = mockMvc.perform(post("/api/boards")
+        var result = mockMvc.perform(post("/api/categories/{categoryId}/boards", category1.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -185,7 +184,7 @@ class BoardControllerTest extends BaseControllerTest {
         //then
         result.andExpect(status().is4xxClientError())
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(BOARD_SAVE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }
@@ -195,7 +194,7 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 업데이트 성공")
     void updateTest() throws Exception {
         //given
-        BoardUpdateReqeust request = new BoardUpdateReqeust("updateTitle", "updateContent");
+        BoardRequest request = new BoardRequest("updateTitle", "updateContent");
 
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(0).getId())
@@ -211,7 +210,7 @@ class BoardControllerTest extends BaseControllerTest {
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .summary("게시글을 업데이트합니다.")
                         .description("게시글을 업데이트합니다.")
-                        .requestFields(BOARD_UPDATE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(BOARD_RESPONSE_FIELDS)
                         .build())));
     }
@@ -221,7 +220,7 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 제목이 없어서 업데이트 실패")
     void updateTitleFailTest() throws Exception {
         //given
-        BoardUpdateReqeust request = new BoardUpdateReqeust("", "updateContent");
+        BoardRequest request = new BoardRequest("", "updateContent");
 
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(0).getId())
@@ -233,7 +232,7 @@ class BoardControllerTest extends BaseControllerTest {
 
         result.andExpect(status().is4xxClientError())
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(BOARD_UPDATE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }
@@ -243,7 +242,7 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 본문이 없어서 업데이트 실패")
     void updateContentFailTest() throws Exception {
         //given
-        BoardUpdateReqeust request = new BoardUpdateReqeust("updateTitle", "");
+        BoardRequest request = new BoardRequest("updateTitle", "");
 
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(0).getId())
@@ -255,7 +254,7 @@ class BoardControllerTest extends BaseControllerTest {
 
         result.andExpect(status().is4xxClientError())
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(BOARD_UPDATE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }
@@ -266,7 +265,7 @@ class BoardControllerTest extends BaseControllerTest {
     @DisplayName(value = "게시글 권한이 없어서 업데이트 실패")
     void updateAuthenticateFailTest() throws Exception {
         //given
-        BoardUpdateReqeust request = new BoardUpdateReqeust("updateTitle", "updateContent");
+        BoardRequest request = new BoardRequest("updateTitle", "updateContent");
 
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(boards.size()-1).getId())
@@ -278,7 +277,7 @@ class BoardControllerTest extends BaseControllerTest {
 
         result.andExpect(status().is4xxClientError())
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(BOARD_UPDATE_REQUEST_FIELDS)
+                        .requestFields(BOARD_REQUEST_FIELDS)
                         .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }

@@ -34,19 +34,11 @@ public class RestDocsUtil {
             )
     );
 
-    public static final List<FieldDescriptor> BOARD_SAVE_REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
-            List.of(
-                    fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
-                    fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 본문"),
-                    fieldWithPath("categoryTitle").type(JsonFieldType.STRING).description("카테고리 이름")
-            )
-    );
-
-    public static final List<FieldDescriptor> BOARD_UPDATE_REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
+    public static final List<FieldDescriptor> BOARD_REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
             List.of(
                     fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 본문")
-                    )
+            )
     );
 
     public static final List<FieldDescriptor> BOARD_RESPONSE_FIELDS = new ArrayList<FieldDescriptor>(

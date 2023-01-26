@@ -12,20 +12,17 @@ import static com.tamlog.blog.support.ValidationUtil.BLANK_CONTENT;
 import static com.tamlog.blog.support.ValidationUtil.BLANK_TITLE;
 
 @Getter
-public class BoardSaveRequest {
+public class BoardRequest {
     @NotBlank(message = BLANK_TITLE)
     private String title;
 
     @NotBlank(message = BLANK_CONTENT)
     private String content;
 
-    private String categoryTitle;
-
     @Builder
-    public BoardSaveRequest(String title, String content, String categoryTitle) {
+    public BoardRequest(String title, String content) {
         this.title = title;
         this.content = content;
-        this.categoryTitle = categoryTitle;
     }
 
     public Board toEntity() {
