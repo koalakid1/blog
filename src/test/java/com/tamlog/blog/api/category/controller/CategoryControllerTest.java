@@ -3,7 +3,6 @@ package com.tamlog.blog.api.category.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.category.domain.Category;
-import com.tamlog.blog.api.category.dto.CategoryRequest;
 import com.tamlog.blog.utils.BaseControllerTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,32 +69,8 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "카테고리 제목이 비어서 실패")
-    void saveTitleFailTest() throws Exception {
-        // given
-        CategoryRequest category = new CategoryRequest(10l, "", 10);
-
-        // when
-        var result = mockMvc.perform(post("/api/categories")
-                .content(objectMapper.writeValueAsString(postCategory))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-
-        //then
-        result.andExpect(status().is4xxClientError())
-                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(CATEGORY_REQUEST_FIELDS)
-                        .responseFields(ERROR_RESPONSE_FIELDS)
-                        .build())));
-    }
-
-    @Test
-    @WithMockCustomUser
     @DisplayName(value = "카테고리 추가 성공")
     void saveTest() throws Exception {
-        // given
-        CategoryRequest category = new CategoryRequest(10l, "category10", 10);
-
         // when
         var result = mockMvc.perform(post("/api/categories")
                 .content(objectMapper.writeValueAsString(postCategory))
@@ -118,7 +93,25 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "타이틀만 데이터로 들어왔을 때, 타이 정보만 업데이트 되는지 테스트")
+    @DisplayName(value = "카테고리 제목이 비어서 실패")
+    void saveTitleFailTest() throws Exception {
+        // when
+        var result = mockMvc.perform(post("/api/categories")
+                .content(objectMapper.writeValueAsString(postCategory))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is4xxClientError())
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
+                        .requestFields(CATEGORY_REQUEST_FIELDS)
+                        .responseFields(ERROR_RESPONSE_FIELDS)
+                        .build())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName(value = "타이틀만 데이터로 들어왔을 때, 타이틀 정보만 업데이트 되는지 테스트")
     void updateCategoryTitleTest() throws Exception {
         //given
         HashMap<String, Object> request = new HashMap<>();
