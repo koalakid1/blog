@@ -28,6 +28,7 @@ public class AuthService {
     public AccountResponse signup(AccountRequest accountRequest) {
         System.out.println("accountRequest.getEmail() = " + accountRequest.getEmail());
         if (accountRepository.existsByEmail(new Email(accountRequest.getEmail()))) {
+            //TODO : 잘못된 EXCEPTION 코드 ... 중복에 관련된 EXCEPTION 처리 해야됨
             throw new AccountNotFoundException();
         }
 
