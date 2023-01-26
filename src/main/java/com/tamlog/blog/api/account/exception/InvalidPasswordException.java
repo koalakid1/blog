@@ -6,7 +6,7 @@ import com.tamlog.blog.advice.UnauthorizedException;
 import static com.tamlog.blog.advice.ExceptionField.errorMessageConcat;
 
 public class InvalidPasswordException extends UnauthorizedException {
-    private static final String MESSAGE = "계정이 존재하지 않습니다.";
+    private static final String MESSAGE = "계정과 비밀번호가 일치하지 않습니다.";
 
     public InvalidPasswordException() {
         super(MESSAGE);

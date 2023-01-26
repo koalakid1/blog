@@ -5,7 +5,9 @@ public enum ExceptionField {
     EXCEPTION_LENGTH("length"),
     EXCEPTION_NAME("name"),
     EXCEPTION_EMAIL("email"),
-    EXCEPTION_NICKNAME("nickname");
+    EXCEPTION_NICKNAME("nickname"),
+    EXCEPTION_EXPIRES_AT("expiresAt"),
+    EXCEPTION_REFRESH_TOKEN("refreshToken");
 
     private final String value;
 
