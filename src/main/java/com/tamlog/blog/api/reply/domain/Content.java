@@ -1,13 +1,12 @@
 package com.tamlog.blog.api.reply.domain;
 
-import com.tamlog.blog.advice.InvalidContentException;
+import com.tamlog.blog.advice.custom.InvalidContentException;
 import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Lob;
 
-import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_LENGTH;
+import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_LENGTH;
 
 @Getter
 @Embeddable
@@ -15,8 +14,7 @@ public class Content {
 
     public static final int MAX_LENGTH = 100;
 
-    @Lob
-    @Column(name = "content", nullable = false, columnDefinition = "text")
+    @Column(name = "content", nullable = false)
     private String value;
 
     protected Content() {

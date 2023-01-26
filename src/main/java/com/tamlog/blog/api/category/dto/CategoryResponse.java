@@ -10,13 +10,13 @@ import java.io.Serializable;
 @Builder
 public class CategoryResponse implements Serializable {
     Long id;
-    String name;
+    String title;
     Integer priority;
 
     public static CategoryResponse of(Category category) {
         return CategoryResponse.builder()
                 .id(category.getId())
-                .name(category.getName())
+                .title(category.getTitle().getValue())
                 .priority(category.getPriority())
                 .build();
     }

@@ -1,9 +1,11 @@
 package com.tamlog.blog.advice;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
+@Getter
 class ErrorResponse {
     LocalDateTime timeStamp = LocalDateTime.now();
     Integer status;

@@ -8,21 +8,24 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
+import static com.tamlog.blog.support.ValidationUtil.BLANK_CONTENT;
+import static com.tamlog.blog.support.ValidationUtil.BLANK_TITLE;
+
 @Getter
 public class BoardSaveRequest {
-    @NotBlank(message = "제목이 없습니다.")
+    @NotBlank(message = BLANK_TITLE)
     private String title;
 
-    @NotBlank(message = "본문이 없습니다.")
+    @NotBlank(message = BLANK_CONTENT)
     private String content;
 
-    private String categoryName;
+    private String categoryTitle;
 
     @Builder
-    public BoardSaveRequest(String title, String content, String categoryName) {
+    public BoardSaveRequest(String title, String content, String categoryTitle) {
         this.title = title;
         this.content = content;
-        this.categoryName = categoryName;
+        this.categoryTitle = categoryTitle;
     }
 
     public Board toEntity() {

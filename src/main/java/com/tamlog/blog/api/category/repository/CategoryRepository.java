@@ -1,6 +1,7 @@
 package com.tamlog.blog.api.category.repository;
 
 import com.tamlog.blog.api.category.domain.Category;
+import com.tamlog.blog.api.category.domain.Title;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +14,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByPriorityGreaterThanEqual(Integer priority);
 
-    Optional<Category> findByName(String categoryName);
+    Optional<Category> findByTitle(Title title);
 }

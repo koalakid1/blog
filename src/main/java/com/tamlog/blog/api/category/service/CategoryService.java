@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_ID;
+import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public CategoryResponse postCategory(CategoryRequest request) {
+    public CategoryResponse saveCategory(CategoryRequest request) {
         List<Category> categories = categoryRepository.findByPriorityGreaterThanEqual(request.getPriority());
         categories.forEach(c -> c.updatePriority(c.getPriority() + 1));
 
@@ -29,7 +29,7 @@ public class CategoryService {
         return CategoryResponse.of(category);
     }
 
-    public List<CategoryResponse> getCategories() {
+    public List<CategoryResponse> findAll() {
         var categories = categoryRepository.findAll();
 
         return categories.stream()
@@ -38,10 +38,10 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResponse updateCategoryName(Long categoryId, String updateName) {
+    public CategoryResponse updateCategoryTitle(Long categoryId, String updateTitle) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
-        category.updateName(updateName);
+        category.updateTitle(updateTitle);
 
         return CategoryResponse.of(category);
     }
@@ -67,7 +67,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteCategory(Long categoryId) {
+    public void delete(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
         categoryRepository.findByPriorityGreaterThanEqual(category.getPriority())
                 .forEach(c -> c.updatePriority(c.getPriority() - 1));

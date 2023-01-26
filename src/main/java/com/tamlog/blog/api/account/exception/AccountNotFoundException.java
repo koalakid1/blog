@@ -1,8 +1,9 @@
 package com.tamlog.blog.api.account.exception;
 
+import com.tamlog.blog.advice.ExceptionField;
 import com.tamlog.blog.advice.NotFoundException;
 
-import static com.tamlog.blog.support.ExceptionUtil.errorMessageConcat;
+import static com.tamlog.blog.advice.ExceptionField.errorMessageConcat;
 
 public class AccountNotFoundException extends NotFoundException {
 
@@ -12,7 +13,7 @@ public class AccountNotFoundException extends NotFoundException {
         super(MESSAGE);
     }
 
-    public AccountNotFoundException(String field, Object value) {
+    public AccountNotFoundException(ExceptionField field, Object value) {
         super(errorMessageConcat(MESSAGE, field, value));
     }
 }

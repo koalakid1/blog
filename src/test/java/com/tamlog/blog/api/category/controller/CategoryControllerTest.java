@@ -4,13 +4,11 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.category.domain.Category;
 import com.tamlog.blog.api.category.dto.CategoryRequest;
-import com.tamlog.blog.api.category.repository.CategoryRepository;
 import com.tamlog.blog.utils.BaseControllerTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -20,8 +18,7 @@ import java.util.Map;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static com.tamlog.blog.utils.FieldsUtils.CATEGORY_REQUEST_FIELDS;
-import static com.tamlog.blog.utils.FieldsUtils.CATEGORY_RESPONSE_FIELDS;
+import static com.tamlog.blog.utils.RestDocsUtil.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.applyPathPrefix;
@@ -30,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CategoryControllerTest extends BaseControllerTest {
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     private final Map<String, Object> postCategory = new HashMap<>();
     private final Map<String, Object> updateCategory = new HashMap<>();
@@ -44,14 +39,19 @@ class CategoryControllerTest extends BaseControllerTest {
         }
         updateCategory.put("id", 9l);
         postCategory.put("id", 10l);
-        postCategory.put("name", "category10");
+        postCategory.put("title", "category10");
         postCategory.put("priority", 10);
+
+        defaultResourceBuilder.tag("Category-API")
+                .responseHeaders(
+                        headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
+                );
     }
 
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "모든 카테고리 리스트 가져오는지 테스트")
+    @DisplayName(value = "모든 카테고리 리스트 가져오기 성공")
     void findAllTest() throws Exception {
         // when
         var result = mockMvc.perform(get("/api/categories")
@@ -61,14 +61,31 @@ class CategoryControllerTest extends BaseControllerTest {
 
         // then
         result.andExpect(status().is2xxSuccessful())
-                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
-                        .tag("Category-API")
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .summary("카테고리 목록 전체를 가져옵니다.")
                         .description("카테고리 목록 전체를 가져옵니다.")
-                        .responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
-                        )
                         .responseFields(applyPathPrefix("[]", CATEGORY_RESPONSE_FIELDS))
+                        .build())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName(value = "카테고리 제목이 비어서 실패")
+    void saveTitleFailTest() throws Exception {
+        // given
+        CategoryRequest category = new CategoryRequest(10l, "", 10);
+
+        // when
+        var result = mockMvc.perform(post("/api/categories")
+                .content(objectMapper.writeValueAsString(postCategory))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is4xxClientError())
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
+                        .requestFields(CATEGORY_REQUEST_FIELDS)
+                        .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }
 
@@ -101,14 +118,14 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "이름만 데이터로 들어왔을 때, 이름 정보만 업데이트 되는지 테스트")
-    void updateCategoryNameTest() throws Exception {
+    @DisplayName(value = "타이틀만 데이터로 들어왔을 때, 타이 정보만 업데이트 되는지 테스트")
+    void updateCategoryTitleTest() throws Exception {
         //given
         HashMap<String, Object> request = new HashMap<>();
-        request.put("name", "category11-update");
+        request.put("title", "category11-update");
 
         //when
-        var result = mockMvc.perform(patch("/api/categories/{category_id}/name", 9l)
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/title", 9l)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -116,7 +133,7 @@ class CategoryControllerTest extends BaseControllerTest {
         //then
 
         result.andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name", Matchers.is(request.get("name"))))
+                .andExpect(jsonPath("$.title", Matchers.is(request.get("title"))))
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
                         .tag("Category-API")
                         .summary("카테고리를 업데이트합니다.")
@@ -124,13 +141,13 @@ class CategoryControllerTest extends BaseControllerTest {
                         .responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
                         )
-                        .requestFields(fieldWithPath("name")
+                        .requestFields(fieldWithPath("title")
                                 .type(JsonFieldType.STRING)
                                 .description("카테고리 이름"))
                         .responseFields(CATEGORY_RESPONSE_FIELDS)
                         .build())));
 
-        System.out.println(categoryRepository.findById(9l).get().getName());
+        System.out.println(categoryRepository.findById(9l).get().getTitle());
     }
 
     @Test

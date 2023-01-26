@@ -1,17 +1,16 @@
 package com.tamlog.blog.utils;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tamlog.blog.api.account.dto.AccountRequest;
 import com.tamlog.blog.api.account.repository.AccountRepository;
 import com.tamlog.blog.api.board.repository.BoardRepository;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.tamlog.blog.api.category.repository.CategoryRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,7 +34,7 @@ public class BaseControllerTest {
     protected static final String DEFAULT_RESTDOCS_PATH = "{class_name}/{method_name}/";
 
     protected MockMvc mockMvc;
-    protected String accessToken;
+    protected ResourceSnippetParametersBuilder defaultResourceBuilder = ResourceSnippetParameters.builder();
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -45,6 +43,10 @@ public class BaseControllerTest {
     protected AccountRepository accountRepository;
     @Autowired
     protected BoardRepository boardRepository;
+    @Autowired
+    protected CategoryRepository categoryRepository;
+
+
 
     @BeforeEach
     void setUp(@Autowired WebApplicationContext applicationContext, RestDocumentationContextProvider restDocumentation) throws Exception {
@@ -54,31 +56,12 @@ public class BaseControllerTest {
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
-
-        AccountRequest request = new AccountRequest("test@test.com", "", "test", "");
-
-        mockMvc.perform(post("/api/auth/signup")
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-
-        var result = this.mockMvc.perform(post("/api/auth/login")
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        String content = result.getResponse().getContentAsString();
-        JSONParser parser = new JSONParser();
-        JSONObject tokenResponse = (JSONObject) parser.parse(content);
-        this.accessToken = (String) tokenResponse.get("accessToken");
-
-        System.out.println("accessToken = " + accessToken);
     }
 
     @AfterEach
     void done() {
         boardRepository.deleteAll();
+        categoryRepository.deleteAll();
         accountRepository.deleteAll();
     }
 }

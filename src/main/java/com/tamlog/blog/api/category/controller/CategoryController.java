@@ -18,22 +18,22 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getCategories() {
-        var categories = categoryService.getCategories();
+    public ResponseEntity<List<CategoryResponse>> findAll() {
+        var categories = categoryService.findAll();
 
         return ResponseEntity.ok(categories);
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> postCategory(@RequestBody CategoryRequest request) {
-        var category = categoryService.postCategory(request);
+    public ResponseEntity<CategoryResponse> saveCategory(@RequestBody CategoryRequest request) {
+        var category = categoryService.saveCategory(request);
 
         return ResponseEntity.ok(category);
     }
 
-    @PatchMapping("/{categoryId}/name")
-    public ResponseEntity<CategoryResponse> updateCategoryName(@PathVariable Long categoryId, @RequestBody Map<String, String> name) {
-        var response = categoryService.updateCategoryName(categoryId, name.get("name"));
+    @PatchMapping("/{categoryId}/title")
+    public ResponseEntity<CategoryResponse> updateCategoryTitle(@PathVariable Long categoryId, @RequestBody Map<String, String> title) {
+        var response = categoryService.updateCategoryTitle(categoryId, title.get("title"));
 
         return ResponseEntity.ok(response);
     }
@@ -46,8 +46,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Object> deleteCategory(@PathVariable Long categoryId) {
-        categoryService.deleteCategory(categoryId);
+    public ResponseEntity<Object> delete(@PathVariable Long categoryId) {
+        categoryService.delete(categoryId);
 
         return ResponseEntity.ok().build();
     }

@@ -4,11 +4,15 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
+import static com.tamlog.blog.support.ValidationUtil.BLANK_CONTENT;
+import static com.tamlog.blog.support.ValidationUtil.BLANK_TITLE;
+
+
 @Getter
 public class BoardUpdateReqeust {
-    @NotBlank(message = "제목이 없습니다.")
+    @NotBlank(message = BLANK_TITLE)
     String title;
-    @NotBlank(message = "본문이 없습니다.")
+    @NotBlank(message = BLANK_CONTENT)
     String content;
 
     public BoardUpdateReqeust() {

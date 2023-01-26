@@ -1,4 +1,4 @@
-package com.tamlog.blog.api.board.domain;
+package com.tamlog.blog.api.category.domain;
 
 import com.tamlog.blog.advice.custom.InvalidTitleException;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_LENGTH;
 @Embeddable
 public class Title {
 
-    public static final int MAX_LENGTH = 200;
+    public static final int MAX_LENGTH = 50;
 
     @Column(name = "title", nullable = false)
     private String value;

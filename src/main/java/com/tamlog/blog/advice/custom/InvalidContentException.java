@@ -1,8 +1,10 @@
-package com.tamlog.blog.advice;
+package com.tamlog.blog.advice.custom;
 
+import com.tamlog.blog.advice.BadRequestException;
+import com.tamlog.blog.advice.ExceptionField;
 import com.tamlog.blog.api.board.domain.Content;
 
-import static com.tamlog.blog.support.ExceptionUtil.errorMessageConcat;
+import static com.tamlog.blog.advice.ExceptionField.errorMessageConcat;
 
 public class InvalidContentException extends BadRequestException {
 
@@ -12,7 +14,7 @@ public class InvalidContentException extends BadRequestException {
         super(MESSAGE);
     }
 
-    public InvalidContentException(String field, Object value) {
+    public InvalidContentException(ExceptionField field, Object value) {
         super(errorMessageConcat(MESSAGE, field, value));
     }
 }

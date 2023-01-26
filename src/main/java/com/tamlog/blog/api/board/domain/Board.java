@@ -31,12 +31,10 @@ public class Board extends BaseTimeEntity {
     private Content content;
 
     @ColumnDefault("0")
-    @Builder.Default()
     @Column(name = "hit_cnt", insertable = false)
     private Integer hit = 0;
 
     @ColumnDefault("0")
-    @Builder.Default()
     @Column(name = "like_cnt", insertable = false)
     private Integer like = 0;
 
@@ -55,11 +53,9 @@ public class Board extends BaseTimeEntity {
     }
 
     @Builder
-    public Board(String title, String content, Integer hit, Integer like, Category category, Account account, List<Reply> replies) {
+    public Board(String title, String content, Category category, Account account, List<Reply> replies) {
         this.title = new Title(title);
         this.content = new Content(content);
-        this.hit = hit;
-        this.like = like;
         this.category = category;
         this.account = account;
         this.replies = replies;

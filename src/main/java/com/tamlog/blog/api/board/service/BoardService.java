@@ -10,6 +10,7 @@ import com.tamlog.blog.api.board.dto.BoardUpdateReqeust;
 import com.tamlog.blog.api.board.exception.BoardNotFoundException;
 import com.tamlog.blog.api.board.repository.BoardRepository;
 import com.tamlog.blog.api.category.domain.Category;
+import com.tamlog.blog.api.category.domain.Title;
 import com.tamlog.blog.api.category.exception.CategoryNotFoundException;
 import com.tamlog.blog.api.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_ID;
-import static com.tamlog.blog.support.ExceptionUtil.EXCEPTION_NAME;
+import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_ID;
+import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_NAME;
 import static com.tamlog.blog.support.SecurityUtil.getCurrentAccountId;
 
 @Service
@@ -33,8 +34,8 @@ public class BoardService {
         Account account = accountRepository.findById(getCurrentAccountId())
                 .orElseThrow(AccountNotFoundException::new);
 
-        Category category = categoryRepository.findByName(request.getCategoryName())
-                .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_NAME, request.getCategoryName()));
+        Category category = categoryRepository.findByTitle(new Title(request.getCategoryTitle()))
+                .orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_NAME, request.getCategoryTitle()));
 
         Board board = request.toEntity(category, account);
 

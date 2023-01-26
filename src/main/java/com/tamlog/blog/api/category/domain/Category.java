@@ -13,8 +13,8 @@ public class Category {
     @Column(name = "category_id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
+    @Embedded
+    private Title title;
 
     @Column(name = "priority", nullable = false)
     private Integer priority;
@@ -23,14 +23,14 @@ public class Category {
     }
 
     @Builder
-    public Category(Long id, String name, Integer priority) {
+    public Category(Long id, String title, Integer priority) {
         this.id = id;
-        this.name = name;
+        this.title = new Title(title);
         this.priority = priority;
     }
 
-    public void updateName(String name) {
-        this.name = name;
+    public void updateTitle(String title) {
+        this.title = new Title(title);
     }
 
     public void updatePriority(Integer priority) {
