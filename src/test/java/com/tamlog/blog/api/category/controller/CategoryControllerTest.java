@@ -12,7 +12,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
@@ -29,12 +31,13 @@ class CategoryControllerTest extends BaseControllerTest {
 
     private final Map<String, Object> postCategory = new HashMap<>();
     private final Map<String, Object> updateCategory = new HashMap<>();
-
+    private final List<Category> categories = new ArrayList<>();
     @BeforeEach
     void setUp() {
         for (int i = 1; i < 10; i++) {
             var category = new Category((long) i, "category" + i, i);
-            categoryRepository.save(category);
+            Category saveCategory = categoryRepository.save(category);
+            categories.add(saveCategory);
         }
         updateCategory.put("id", 9l);
         postCategory.put("id", 10l);
@@ -95,6 +98,9 @@ class CategoryControllerTest extends BaseControllerTest {
     @WithMockCustomUser
     @DisplayName(value = "카테고리 제목이 비어서 실패")
     void saveTitleFailTest() throws Exception {
+        // given
+        postCategory.put("title", "");
+
         // when
         var result = mockMvc.perform(post("/api/categories")
                 .content(objectMapper.writeValueAsString(postCategory))
@@ -111,14 +117,16 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "타이틀만 데이터로 들어왔을 때, 타이틀 정보만 업데이트 되는지 테스트")
+    @DisplayName(value = "타이틀만 데이터로 들어왔을 때, 타이틀 정보만 업데이트 성공")
     void updateCategoryTitleTest() throws Exception {
         //given
         HashMap<String, Object> request = new HashMap<>();
         request.put("title", "category11-update");
+        Integer index = categories.size() - 1;
+        Long id = categories.get(index).getId();
 
         //when
-        var result = mockMvc.perform(patch("/api/categories/{category_id}/title", 9l)
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/title", id)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -127,30 +135,28 @@ class CategoryControllerTest extends BaseControllerTest {
 
         result.andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.title", Matchers.is(request.get("title"))))
-                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
-                        .tag("Category-API")
-                        .summary("카테고리를 업데이트합니다.")
-                        .description("카테고리를 업데이트합니다.")
-                        .responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
-                        )
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
+                        .summary("카테고리 제목을 업데이트합니다.")
+                        .description("카테고리 제목을 업데이트합니다.")
                         .requestFields(fieldWithPath("title")
                                 .type(JsonFieldType.STRING)
                                 .description("카테고리 이름"))
                         .responseFields(CATEGORY_RESPONSE_FIELDS)
                         .build())));
-
-        System.out.println(categoryRepository.findById(9l).get().getTitle());
     }
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정")
+    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정 성공")
     void updateCategoryPriorityTest() throws Exception {
+        //given
         HashMap<String, Object> request = new HashMap<>();
         request.put("priority", 5);
+        Integer index = categories.size() - 1;
+        Long id = categories.get(index).getId();
+
         //when
-        var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", 9l)
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", id)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
@@ -158,13 +164,9 @@ class CategoryControllerTest extends BaseControllerTest {
         //then
         result.andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.priority", Matchers.is(5)))
-                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(ResourceSnippetParameters.builder()
-                        .tag("Category-API")
-                        .summary("카테고리를 업데이트합니다.")
-                        .description("카테고리를 업데이트합니다.")
-                        .responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
-                        )
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
+                        .summary("카테고리 순서를 업데이트합니다.")
+                        .description("카테고리 순서를 업데이트합니다.")
                         .requestFields(fieldWithPath("priority")
                                 .type(JsonFieldType.NUMBER)
                                 .description("카테고리 순서"))

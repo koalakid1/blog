@@ -12,7 +12,7 @@ import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_EMAIL;
 @Getter
 @Embeddable
 public class Email {
-    public static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@a-zA-Z0-9?(?:.a-zA-Z0-9?)$");
+    public static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$");
 
     @Column(name = "email", nullable = false)
     private String value;
@@ -25,8 +25,8 @@ public class Email {
         this.value = value;
     }
 
-    private void validate(String email) {
-        if (!PATTERN.matcher(email).matches()) {
+    private void validate(String value) {
+        if (!PATTERN.matcher(value).matches()) {
             throw new InvalidEmailException(EXCEPTION_EMAIL, value);
         }
     }

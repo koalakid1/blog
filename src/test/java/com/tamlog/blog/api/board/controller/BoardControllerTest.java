@@ -2,6 +2,7 @@ package com.tamlog.blog.api.board.controller;
 
 import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.account.domain.Account;
+import com.tamlog.blog.api.account.domain.Email;
 import com.tamlog.blog.api.account.domain.Role;
 import com.tamlog.blog.api.board.domain.Board;
 import com.tamlog.blog.api.board.dto.BoardSaveRequest;
@@ -42,7 +43,7 @@ class BoardControllerTest extends BaseControllerTest {
     void setup() {
         category1 = categoryRepository.save(new Category(1l, "category1", 1));
         category2 = categoryRepository.save(new Category(2l, "category2", 2));
-        account1 = accountRepository.findByEmail("test@test.com").get();
+        account1 = accountRepository.findByEmail(new Email("test@test.com")).get();
         account2 = accountRepository.save(new Account(100l, "test2@test.com", "", "test2", Role.USER, ""));
 
         for (int i = 1; i < 3; i++) {

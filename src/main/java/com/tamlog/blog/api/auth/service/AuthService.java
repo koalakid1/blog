@@ -1,7 +1,9 @@
 package com.tamlog.blog.api.auth.service;
 
+import com.tamlog.blog.api.account.domain.Email;
 import com.tamlog.blog.api.account.dto.AccountRequest;
 import com.tamlog.blog.api.account.dto.AccountResponse;
+import com.tamlog.blog.api.account.exception.AccountNotFoundException;
 import com.tamlog.blog.api.account.repository.AccountRepository;
 import com.tamlog.blog.api.auth.dto.TokenResponse;
 import com.tamlog.blog.support.jwt.TokenProvider;
@@ -24,8 +26,9 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     public AccountResponse signup(AccountRequest accountRequest) {
-        if (accountRepository.existsByEmail(accountRequest.getEmail())) {
-            throw new RuntimeException("이미 가입된 유저입니다.");
+        System.out.println("accountRequest.getEmail() = " + accountRequest.getEmail());
+        if (accountRepository.existsByEmail(new Email(accountRequest.getEmail()))) {
+            throw new AccountNotFoundException();
         }
 
         return AccountResponse.of(accountRepository.save(accountRequest.toEntity(passwordEncoder)));
