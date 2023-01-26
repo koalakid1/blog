@@ -34,15 +34,10 @@ public class AccountService {
         return AccountResponse.of(account);
     }
 
-    @Transactional
     public AccountResponse updateUserPassword(AccountChangePasswordRequest request) {
         Account account = findBySecurity();
 
-        if (!passwordEncoder.matches(account.getPassword(), request.getExPassword())){
-            throw new RuntimeException("비밀번호가 틀렸습니다.");
-        }
-
-        account.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+        account.updatePassword(request.getCurrentPassword(), request.getNewPassword(), passwordEncoder);
 
         return AccountResponse.of(account);
     }

@@ -12,4 +12,9 @@ public class ValidationUtil {
      * @Positive()
      */
     public static final String NOT_POSITIVE = "양수만 입력하세요.";
+
+    /**
+     * @Pattern()
+     */
+    public static final String NOT_PATTERN_PASSWORD = "비밀번호가 양식에 맞지 않습니다.";
 }

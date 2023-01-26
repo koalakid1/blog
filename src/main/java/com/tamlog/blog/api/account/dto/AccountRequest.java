@@ -9,12 +9,20 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.validation.constraints.Pattern;
+
+import static com.tamlog.blog.support.ValidationUtil.NOT_PATTERN_PASSWORD;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class AccountRequest {
     private String email;
+    @Pattern(
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,20}$",
+            message = NOT_PATTERN_PASSWORD
+    )
     private String password;
     private String nickname;
     private String path;

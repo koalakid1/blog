@@ -3,7 +3,9 @@ package com.tamlog.blog.advice;
 public enum ExceptionField {
     EXCEPTION_ID("id"),
     EXCEPTION_LENGTH("length"),
-    EXCEPTION_NAME("name");
+    EXCEPTION_NAME("name"),
+    EXCEPTION_EMAIL("email"),
+    EXCEPTION_NICKNAME("nickname");
 
     private final String value;
 

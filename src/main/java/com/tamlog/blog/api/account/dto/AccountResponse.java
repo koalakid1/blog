@@ -16,8 +16,8 @@ public class AccountResponse {
 
     public static AccountResponse of(Account account) {
         return AccountResponse.builder()
-                .email(account.getEmail())
-                .nickname(account.getNickname())
+                .email(account.getEmail().getValue())
+                .nickname(account.getNickname().getValue())
                 .build();
     }
 }

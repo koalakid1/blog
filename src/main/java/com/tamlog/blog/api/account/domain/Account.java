@@ -3,6 +3,7 @@ package com.tamlog.blog.api.account.domain;
 import com.tamlog.blog.support.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -15,14 +16,14 @@ public class Account extends BaseTimeEntity {
     @Column(name = "account_id", nullable = false)
     private Long id;
 
-    @Column(name = "email", length = 40)
-    private String email;
+    @Embedded
+    private Email email;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Embedded
+    private Password password;
 
-    @Column(name = "nickname", nullable = false, length = 15)
-    private String nickname;
+    @Embedded
+    private Nickname nickname;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 10)
@@ -37,15 +38,15 @@ public class Account extends BaseTimeEntity {
     @Builder
     public Account(Long id, String email, String password, String nickname, Role role, String path) {
         this.id = id;
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
+        this.email = new Email(email);
+        this.password = new Password(password);
+        this.nickname = new Nickname(nickname);
         this.role = role;
         this.path = path;
     }
 
     public Account update(String nickname, String path) {
-        this.nickname = nickname;
+        this.nickname = new Nickname(nickname);
         this.path = path;
 
         return this;
@@ -56,10 +57,10 @@ public class Account extends BaseTimeEntity {
     }
 
     public void updateNickname(String nickname) {
-        this.nickname = nickname;
+        this.nickname = new Nickname(nickname);
     }
 
-    public void updatePassword(String password) {
-        this.password = password;
+    public void updatePassword(String nowPassword, String newPassword, PasswordEncoder passwordEncoder) {
+        this.password.updatePassword(nowPassword, newPassword, passwordEncoder);
     }
 }
