@@ -27,11 +27,11 @@ public class Content {
 
     private void validate(String content) {
         if (content == null || content.isBlank()) {
-            throw new InvalidContentException(EXCEPTION_LENGTH, 0);
+            throw new InvalidContentException(MAX_LENGTH, EXCEPTION_LENGTH, 0);
         }
 
         if (content.length() > MAX_LENGTH) {
-            throw new InvalidContentException(EXCEPTION_LENGTH, content.length());
+            throw new InvalidContentException(MAX_LENGTH, EXCEPTION_LENGTH, content.length());
         }
     }
 }

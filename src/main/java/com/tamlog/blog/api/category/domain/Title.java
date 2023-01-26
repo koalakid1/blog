@@ -27,11 +27,11 @@ public class Title {
 
     private void validate(String title) {
         if (title == null || title.isBlank()) {
-            throw new InvalidTitleException(EXCEPTION_LENGTH, 0);
+            throw new InvalidTitleException(MAX_LENGTH, EXCEPTION_LENGTH, 0);
         }
 
         if (title.length() > MAX_LENGTH) {
-            throw new InvalidTitleException(EXCEPTION_LENGTH, title.length());
+            throw new InvalidTitleException(MAX_LENGTH, EXCEPTION_LENGTH, title.length());
         }
     }
 }
