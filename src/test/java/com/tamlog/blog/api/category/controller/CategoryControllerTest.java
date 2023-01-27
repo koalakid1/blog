@@ -3,6 +3,7 @@ package com.tamlog.blog.api.category.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.category.domain.Category;
+import com.tamlog.blog.api.category.dto.CategoryRequest;
 import com.tamlog.blog.utils.BaseControllerTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -30,8 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CategoryControllerTest extends BaseControllerTest {
 
-    private final Map<String, Object> postCategory = new HashMap<>();
-    private final Map<String, Object> updateCategory = new HashMap<>();
     private final List<Category> categories = new ArrayList<>();
     @BeforeEach
     void setUp() {
@@ -40,10 +39,6 @@ class CategoryControllerTest extends BaseControllerTest {
             Category saveCategory = categoryRepository.save(category);
             categories.add(saveCategory);
         }
-        updateCategory.put("id", 9l);
-        postCategory.put("id", 10l);
-        postCategory.put("title", "category10");
-        postCategory.put("priority", 10);
 
         defaultResourceBuilder.tag("Category-API")
                 .responseHeaders(
@@ -80,9 +75,12 @@ class CategoryControllerTest extends BaseControllerTest {
     @WithMockCustomUser
     @DisplayName(value = "카테고리 추가 성공")
     void saveTest() throws Exception {
+        //given
+        CategoryRequest saveCategoryRequest = new CategoryRequest("category10", 10);
+
         // when
         var result = mockMvc.perform(post("/api/categories")
-                .content(objectMapper.writeValueAsString(postCategory))
+                .content(objectMapper.writeValueAsString(saveCategoryRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -105,11 +103,11 @@ class CategoryControllerTest extends BaseControllerTest {
     @DisplayName(value = "카테고리 제목이 비어서 실패")
     void saveTitleFailTest() throws Exception {
         // given
-        postCategory.put("title", "");
+        CategoryRequest saveCategoryRequest = new CategoryRequest("", 10);
 
         // when
         var result = mockMvc.perform(post("/api/categories")
-                .content(objectMapper.writeValueAsString(postCategory))
+                .content(objectMapper.writeValueAsString(saveCategoryRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -156,14 +154,14 @@ class CategoryControllerTest extends BaseControllerTest {
     @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정 성공")
     void updateCategoryPriorityTest() throws Exception {
         //given
-        HashMap<String, Object> request = new HashMap<>();
-        request.put("priority", 5);
+        Map<String, Object> updateCategoryRequest = new HashMap<>();
+        updateCategoryRequest.put("priority", 5);
         Integer index = categories.size() - 1;
         Long id = categories.get(index).getId();
 
         //when
         var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", id)
-                .content(objectMapper.writeValueAsString(request))
+                .content(objectMapper.writeValueAsString(updateCategoryRequest))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -173,6 +171,58 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .summary("카테고리 순서를 업데이트합니다.")
                         .description("카테고리 순서를 업데이트합니다.")
+                        .requestFields(fieldWithPath("priority")
+                                .type(JsonFieldType.NUMBER)
+                                .description("카테고리 순서"))
+                        .responseFields(CATEGORY_RESPONSE_FIELDS)
+                        .build())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정 성공 2")
+    void updateCategoryPriorityOtherTest() throws Exception {
+        //given
+        Map<String, Object> updateCategoryRequest = new HashMap<>();
+        updateCategoryRequest.put("priority", 5);
+        Long id = categories.get(1).getId();
+
+        //when
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", id)
+                .content(objectMapper.writeValueAsString(updateCategoryRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.priority", Matchers.is(5)))
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
+                        .requestFields(fieldWithPath("priority")
+                                .type(JsonFieldType.NUMBER)
+                                .description("카테고리 순서"))
+                        .responseFields(CATEGORY_RESPONSE_FIELDS)
+                        .build())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정 성공 2")
+    void updateCategoryPriorityFailTest() throws Exception {
+        //given
+        Map<String, Object> updateCategoryRequest = new HashMap<>();
+        updateCategoryRequest.put("priority", 5);
+        Long id = categories.get(1).getId();
+
+        //when
+        var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", id)
+                .content(objectMapper.writeValueAsString(updateCategoryRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.priority", Matchers.is(5)))
+                .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .requestFields(fieldWithPath("priority")
                                 .type(JsonFieldType.NUMBER)
                                 .description("카테고리 순서"))

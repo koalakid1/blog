@@ -25,13 +25,6 @@ public class BoardRequest {
         this.content = content;
     }
 
-    public Board toEntity() {
-        return Board.builder()
-                .title(title)
-                .content(content)
-                .build();
-    }
-
     public Board toEntity(Category category, Account account) {
         return Board.builder()
                 .title(title)

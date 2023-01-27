@@ -13,7 +13,6 @@ public class RestDocsUtil {
 
     public static final List<FieldDescriptor> CATEGORY_REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
             List.of(
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("카테고리 인덱스"),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("카테고리 이름"),
                     fieldWithPath("priority").type(JsonFieldType.NUMBER).description("카테고리 순서")
             )

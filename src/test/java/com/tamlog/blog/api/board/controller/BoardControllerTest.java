@@ -37,7 +37,6 @@ class BoardControllerTest extends BaseControllerTest {
     Category category1, category2;
     List<Board> boards = new ArrayList<>();
 
-
     @BeforeEach
     void setUp() {
         category1 = categoryRepository.save(new Category(1l, "category1", 1));
