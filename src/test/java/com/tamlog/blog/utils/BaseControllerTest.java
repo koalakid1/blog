@@ -59,7 +59,7 @@ public class BaseControllerTest {
     }
 
     @AfterEach
-    void done() {
+    void delete() {
         boardRepository.deleteAll();
         categoryRepository.deleteAll();
         accountRepository.deleteAll();

@@ -39,7 +39,7 @@ class BoardControllerTest extends BaseControllerTest {
 
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         category1 = categoryRepository.save(new Category(1l, "category1", 1));
         category2 = categoryRepository.save(new Category(2l, "category2", 2));
         account1 = accountRepository.findByEmail(new Email("test@test.com")).get();
@@ -57,7 +57,7 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @AfterEach
-    void doneBoard() {
+    void clear() {
         boards.clear();
     }
 

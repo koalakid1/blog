@@ -5,6 +5,7 @@ import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.category.domain.Category;
 import com.tamlog.blog.utils.BaseControllerTest;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,11 @@ class CategoryControllerTest extends BaseControllerTest {
                 .responseHeaders(
                         headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
                 );
+    }
+
+    @AfterEach
+    void clear() {
+        categories.clear();
     }
 
 
