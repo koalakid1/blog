@@ -22,7 +22,6 @@ public class BoardResponse {
 
     private LocalDateTime updatedAt;
 
-    // TODO : dto로 변환
     private CategoryResponse category;
 
     private AccountResponse account;

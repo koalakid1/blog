@@ -1,11 +1,14 @@
 package com.tamlog.blog.api.auth.service;
 
+import com.tamlog.blog.advice.ExceptionField;
+import com.tamlog.blog.advice.custom.AlreadyExistNicknameException;
 import com.tamlog.blog.api.account.domain.Email;
+import com.tamlog.blog.api.account.domain.Nickname;
 import com.tamlog.blog.api.account.dto.AccountRequest;
 import com.tamlog.blog.api.account.dto.AccountResponse;
-import com.tamlog.blog.api.account.exception.AccountNotFoundException;
 import com.tamlog.blog.api.account.repository.AccountRepository;
 import com.tamlog.blog.api.auth.dto.TokenResponse;
+import com.tamlog.blog.api.auth.exception.AlreadyExistAccountException;
 import com.tamlog.blog.support.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,11 +29,11 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     public AccountResponse signup(AccountRequest accountRequest) {
-        System.out.println("accountRequest.getEmail() = " + accountRequest.getEmail());
-        if (accountRepository.existsByEmail(new Email(accountRequest.getEmail()))) {
-            //TODO : 잘못된 EXCEPTION 코드 ... 중복에 관련된 EXCEPTION 처리 해야됨
-            throw new AccountNotFoundException();
-        }
+        Email email = new Email(accountRequest.getEmail());
+        validateAccount(email);
+
+        Nickname nickname = new Nickname(accountRequest.getNickname());
+        validateUniqueNickname(nickname);
 
         return AccountResponse.of(accountRepository.save(accountRequest.toEntity(passwordEncoder)));
     }
@@ -42,5 +45,17 @@ public class AuthService {
         Authentication authenticate = managerBuilder.getObject().authenticate(authenticationToken);
 
         return tokenProvider.generateAccessToken(authenticate);
+    }
+
+    private void validateAccount(Email email) {
+        if (accountRepository.existsByEmail(email)) {
+            throw new AlreadyExistAccountException();
+        }
+    }
+
+    private void validateUniqueNickname(Nickname nickname) {
+        if (accountRepository.existsByNickname(nickname)) {
+            throw new AlreadyExistNicknameException(ExceptionField.EXCEPTION_NICKNAME, nickname.getValue());
+        };
     }
 }

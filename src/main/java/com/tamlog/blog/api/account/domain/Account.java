@@ -60,6 +60,10 @@ public class Account extends BaseTimeEntity {
         this.nickname = new Nickname(nickname);
     }
 
+    public void updateNickname(Nickname nickname) {
+        this.nickname = nickname;
+    }
+
     public void updatePassword(String nowPassword, String newPassword, PasswordEncoder passwordEncoder) {
         this.password.updatePassword(nowPassword, newPassword, passwordEncoder);
     }

@@ -1,6 +1,9 @@
 package com.tamlog.blog.api.account.service;
 
+import com.tamlog.blog.advice.ExceptionField;
+import com.tamlog.blog.advice.custom.AlreadyExistNicknameException;
 import com.tamlog.blog.api.account.domain.Account;
+import com.tamlog.blog.api.account.domain.Nickname;
 import com.tamlog.blog.api.account.dto.AccountChangePasswordRequest;
 import com.tamlog.blog.api.account.dto.AccountResponse;
 import com.tamlog.blog.api.account.exception.AccountNotFoundException;
@@ -28,12 +31,14 @@ public class AccountService {
     @Transactional
     public AccountResponse updateUserNickname(String nickname) {
         Account account = findBySecurity();
-
-        account.updateNickname(nickname);
+        Nickname validNickname = new Nickname(nickname);
+        validateUniqueNickname(validNickname);
+        account.updateNickname(validNickname);
 
         return AccountResponse.of(account);
     }
 
+    @Transactional
     public AccountResponse updateUserPassword(AccountChangePasswordRequest request) {
         Account account = findBySecurity();
 
@@ -45,5 +50,11 @@ public class AccountService {
     private Account findBySecurity() {
         return accountRepository.findById(getCurrentAccountId())
                 .orElseThrow(AccountNotFoundException::new);
+    }
+
+    private void validateUniqueNickname(Nickname nickname) {
+        if (accountRepository.existsByNickname(nickname)) {
+            throw new AlreadyExistNicknameException(ExceptionField.EXCEPTION_NICKNAME, nickname.getValue());
+        };
     }
 }
