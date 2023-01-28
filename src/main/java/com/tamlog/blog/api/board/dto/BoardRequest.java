@@ -3,7 +3,6 @@ package com.tamlog.blog.api.board.dto;
 import com.tamlog.blog.api.account.domain.Account;
 import com.tamlog.blog.api.board.domain.Board;
 import com.tamlog.blog.api.category.domain.Category;
-import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
@@ -19,7 +18,6 @@ public class BoardRequest {
     @NotBlank(message = BLANK_CONTENT)
     private String content;
 
-    @Builder
     public BoardRequest(String title, String content) {
         this.title = title;
         this.content = content;
