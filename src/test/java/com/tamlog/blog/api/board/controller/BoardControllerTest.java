@@ -13,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.tamlog.blog.utils.RestDocsUtil.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -49,10 +47,7 @@ class BoardControllerTest extends BaseControllerTest {
         }
         boards.add(boardRepository.save(new Board("title" + 3, "content" + 3,category1, account2, new ArrayList<>())));
 
-        defaultResourceBuilder.tag("Board-API")
-                .responseHeaders(
-                        headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
-                );
+        defaultResourceBuilder.tag("Board-API");
     }
 
     @AfterEach

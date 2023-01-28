@@ -1,5 +1,7 @@
 package com.tamlog.blog.api.category.service;
 
+import com.tamlog.blog.advice.ExistUsingResourceException;
+import com.tamlog.blog.api.board.repository.BoardRepository;
 import com.tamlog.blog.api.category.domain.Category;
 import com.tamlog.blog.api.category.dto.CategoryRequest;
 import com.tamlog.blog.api.category.dto.CategoryResponse;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_CATEGORY;
 import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_ID;
 
 @Service
@@ -18,6 +21,7 @@ import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_ID;
 @Transactional(readOnly = true)
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final BoardRepository boardRepository;
 
     @Transactional
     public CategoryResponse saveCategory(CategoryRequest request) {
@@ -54,10 +58,11 @@ public class CategoryService {
         Integer priority = category.getPriority();
         assert priority != null;
         int compareTo = priority.compareTo(updatePriority);
+
         if (compareTo > 0) {
             categoryRepository.findByPriorityGreaterThanEqualAndPriorityLessThan(updatePriority, priority)
                     .forEach(c -> c.updatePriority(c.getPriority() + 1));
-        } else if (compareTo < 0) {
+        } else {
             categoryRepository.findByPriorityGreaterThanAndPriorityLessThanEqual(priority, updatePriority)
                     .forEach(c -> c.updatePriority(c.getPriority() - 1));
         }
@@ -68,6 +73,9 @@ public class CategoryService {
 
     @Transactional
     public void delete(Long categoryId) {
+        if (boardRepository.existsByCategoryId(categoryId)) {
+            throw new ExistUsingResourceException(EXCEPTION_CATEGORY, categoryId);
+        }
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(EXCEPTION_ID, categoryId));
         categoryRepository.findByPriorityGreaterThanEqual(category.getPriority())
                 .forEach(c -> c.updatePriority(c.getPriority() - 1));

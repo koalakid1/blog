@@ -23,6 +23,11 @@ public class Category {
     }
 
     @Builder
+    public Category(String title, Integer priority) {
+        this.title = new Title(title);
+        this.priority = priority;
+    }
+
     public Category(Long id, String title, Integer priority) {
         this.id = id;
         this.title = new Title(title);

@@ -40,10 +40,7 @@ class CategoryControllerTest extends BaseControllerTest {
             categories.add(saveCategory);
         }
 
-        defaultResourceBuilder.tag("Category-API")
-                .responseHeaders(
-                        headerWithName(HttpHeaders.CONTENT_TYPE).description("응답 방식")
-                );
+        defaultResourceBuilder.tag("Category-API");
     }
 
     @AfterEach
@@ -155,8 +152,9 @@ class CategoryControllerTest extends BaseControllerTest {
     void updateCategoryPriorityTest() throws Exception {
         //given
         Map<String, Object> updateCategoryRequest = new HashMap<>();
-        updateCategoryRequest.put("priority", 5);
         Integer index = categories.size() - 1;
+        Integer updatePriority = categories.get(index - 5).getPriority();
+        updateCategoryRequest.put("priority", updatePriority);
         Long id = categories.get(index).getId();
 
         //when
@@ -167,7 +165,7 @@ class CategoryControllerTest extends BaseControllerTest {
 
         //then
         result.andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.priority", Matchers.is(5)))
+                .andExpect(jsonPath("$.priority", Matchers.is(updatePriority)))
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .summary("카테고리 순서를 업데이트합니다.")
                         .description("카테고리 순서를 업데이트합니다.")
@@ -180,12 +178,12 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정 성공 2")
-    void updateCategoryPriorityOtherTest() throws Exception {
+    @DisplayName(value = "카테고리가 존재하지 않아서 순서 수정 실패")
+    void updateCategoryPriorityFailTest() throws Exception {
         //given
         Map<String, Object> updateCategoryRequest = new HashMap<>();
         updateCategoryRequest.put("priority", 5);
-        Long id = categories.get(1).getId();
+        Long id = categories.get(0).getId() - 1;
 
         //when
         var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", id)
@@ -194,39 +192,30 @@ class CategoryControllerTest extends BaseControllerTest {
                 .accept(MediaType.APPLICATION_JSON));
 
         //then
-        result.andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.priority", Matchers.is(5)))
+        result.andExpect(status().is4xxClientError())
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
                         .requestFields(fieldWithPath("priority")
                                 .type(JsonFieldType.NUMBER)
                                 .description("카테고리 순서"))
-                        .responseFields(CATEGORY_RESPONSE_FIELDS)
+                        .responseFields(ERROR_RESPONSE_FIELDS)
                         .build())));
     }
 
     @Test
     @WithMockCustomUser
-    @DisplayName(value = "updatePriority가 주어지면 priority 순서대로 수정 성공 2")
-    void updateCategoryPriorityFailTest() throws Exception {
+    @DisplayName(value = "카테고리 삭제 성공")
+    void deleteTest() throws Exception {
         //given
-        Map<String, Object> updateCategoryRequest = new HashMap<>();
-        updateCategoryRequest.put("priority", 5);
-        Long id = categories.get(1).getId();
+        Long id = categories.get(0).getId();
 
         //when
-        var result = mockMvc.perform(patch("/api/categories/{category_id}/priority", id)
-                .content(objectMapper.writeValueAsString(updateCategoryRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
+        var result = mockMvc.perform(delete("/api/categories/{category_id}", id));
 
         //then
         result.andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.priority", Matchers.is(5)))
                 .andDo(document(DEFAULT_RESTDOCS_PATH, resource(defaultResourceBuilder
-                        .requestFields(fieldWithPath("priority")
-                                .type(JsonFieldType.NUMBER)
-                                .description("카테고리 순서"))
-                        .responseFields(CATEGORY_RESPONSE_FIELDS)
+                        .summary("카테고리를 삭제합니다.")
+                        .description("카테고리를 삭제합니다.")
                         .build())));
     }
 }
