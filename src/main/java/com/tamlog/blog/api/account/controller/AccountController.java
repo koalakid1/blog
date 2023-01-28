@@ -11,23 +11,23 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/account")
 public class AccountController {
 
     private final AccountService accountService;
 
-    @GetMapping
-    public ResponseEntity<AccountResponse> findCurrentUser() {
-        return ResponseEntity.ok(accountService.findCurrentUser());
+    @GetMapping("/profile")
+    public ResponseEntity<AccountResponse> findCurrentAccount() {
+        return ResponseEntity.ok(accountService.findCurrentAccount());
     }
 
     @PutMapping("nickname")
     public ResponseEntity<AccountResponse> updateNickName(@RequestBody Map<String, String> request) {
-        return ResponseEntity.ok(accountService.updateUserNickname(request.get("nickname")));
+        return ResponseEntity.ok(accountService.updateNickname(request.get("nickname")));
     }
 
     @PutMapping("password")
     public ResponseEntity<AccountResponse> updatePassword(@RequestBody AccountChangePasswordRequest request) {
-        return ResponseEntity.ok(accountService.updateUserPassword(request));
+        return ResponseEntity.ok(accountService.updatePassword(request));
     }
 }

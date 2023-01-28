@@ -26,6 +26,13 @@ public class RestDocsUtil {
             )
     );
 
+    public static final List<FieldDescriptor> ACCOUNT_CHANGE_PASSWORD_REQUEST_FIELDS = new ArrayList<FieldDescriptor>(
+            List.of(
+                    fieldWithPath("currentPassword").type(JsonFieldType.STRING).description("유저 현재 비밀번호"),
+                    fieldWithPath("newPassword").type(JsonFieldType.STRING).description("유저 바꿀 비밀번호")
+            )
+    );
+
     public static final List<FieldDescriptor> ACCOUNT_RESPONSE_FIELDS = new ArrayList<FieldDescriptor>(
             List.of(
                     fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일"),

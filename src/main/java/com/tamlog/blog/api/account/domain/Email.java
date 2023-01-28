@@ -12,9 +12,8 @@ import static com.tamlog.blog.advice.ExceptionField.EXCEPTION_EMAIL;
 @Getter
 @Embeddable
 public class Email {
-    public static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$");
+    public static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9.%+-]+@[a-zA-Z]+.[a-zA-Z]{2,}+.[a-zA-Z]+$");
 
-    // TODO : 유니크 조건 추가해야됨 테이블도 ..
     @Column(name = "email", nullable = false, unique = true)
     private String value;
 

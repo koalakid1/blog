@@ -24,12 +24,12 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AccountResponse findCurrentUser() {
+    public AccountResponse findCurrentAccount() {
         return AccountResponse.of(findBySecurity());
     }
 
     @Transactional
-    public AccountResponse updateUserNickname(String nickname) {
+    public AccountResponse updateNickname(String nickname) {
         Account account = findBySecurity();
         Nickname validNickname = new Nickname(nickname);
         validateUniqueNickname(validNickname);
@@ -39,7 +39,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponse updateUserPassword(AccountChangePasswordRequest request) {
+    public AccountResponse updatePassword(AccountChangePasswordRequest request) {
         Account account = findBySecurity();
 
         account.updatePassword(request.getCurrentPassword(), request.getNewPassword(), passwordEncoder);

@@ -1,6 +1,5 @@
 package com.tamlog.blog.api.board.controller;
 
-import com.tamlog.blog.annotations.WithMockCustomUser;
 import com.tamlog.blog.api.account.domain.Account;
 import com.tamlog.blog.api.account.domain.Email;
 import com.tamlog.blog.api.account.domain.Role;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -56,7 +56,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "id로 게시글 하나 가져오기 성공")
     void findByIdTest() throws Exception {
         // given
@@ -64,6 +63,7 @@ class BoardControllerTest extends BaseControllerTest {
 
         // when
         var result = mockMvc.perform(get("/api/boards/{boardId}", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -78,7 +78,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "id로 게시글 하나 가져오기 실패")
     void findByIdFailTest() throws Exception {
         // given
@@ -86,6 +85,7 @@ class BoardControllerTest extends BaseControllerTest {
 
         // when
         var result = mockMvc.perform(get("/api/boards/{boardId}", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -98,12 +98,12 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "모든 게시글을 가져오기 성공")
     void findAllTest() throws Exception {
         // given
         // when
         var result = mockMvc.perform(get("/api/categories/{categoryId}/boards", category1.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -119,7 +119,6 @@ class BoardControllerTest extends BaseControllerTest {
 
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 추가 성공")
     void saveTest() throws Exception {
         // given
@@ -128,6 +127,7 @@ class BoardControllerTest extends BaseControllerTest {
         // when
         var result = mockMvc.perform(post("/api/categories/{categoryId}/boards", category1.getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -142,7 +142,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 제목이 없어서 추가 실패")
     void saveTitleFailTest() throws Exception {
         // given
@@ -151,6 +150,7 @@ class BoardControllerTest extends BaseControllerTest {
         // when
         var result = mockMvc.perform(post("/api/categories/{categoryId}/boards", category1.getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -163,7 +163,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 본문이 없어서 추가 실패")
     void saveContentFailTest() throws Exception {
         // given
@@ -172,6 +171,7 @@ class BoardControllerTest extends BaseControllerTest {
         // when
         var result = mockMvc.perform(post("/api/categories/{categoryId}/boards", category1.getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -184,7 +184,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 업데이트 성공")
     void updateTest() throws Exception {
         //given
@@ -193,6 +192,7 @@ class BoardControllerTest extends BaseControllerTest {
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(0).getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -210,7 +210,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 제목이 없어서 업데이트 실패")
     void updateTitleFailTest() throws Exception {
         //given
@@ -219,6 +218,7 @@ class BoardControllerTest extends BaseControllerTest {
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(0).getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -232,7 +232,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 본문이 없어서 업데이트 실패")
     void updateContentFailTest() throws Exception {
         //given
@@ -241,6 +240,7 @@ class BoardControllerTest extends BaseControllerTest {
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(0).getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -255,7 +255,6 @@ class BoardControllerTest extends BaseControllerTest {
 
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 권한이 없어서 업데이트 실패")
     void updateAuthenticateFailTest() throws Exception {
         //given
@@ -264,6 +263,7 @@ class BoardControllerTest extends BaseControllerTest {
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}", boards.get(boards.size()-1).getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -278,7 +278,6 @@ class BoardControllerTest extends BaseControllerTest {
 
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 카테고리 업데이트 성공")
     void updateCategoryTest() throws Exception {
         //given
@@ -288,6 +287,7 @@ class BoardControllerTest extends BaseControllerTest {
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}/category", boards.get(0).getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
@@ -304,7 +304,6 @@ class BoardControllerTest extends BaseControllerTest {
     }
 
     @Test
-    @WithMockCustomUser
     @DisplayName(value = "게시글 카테고리가 존재하지 않아서 업데이트 실패")
     void updateCategoryFailTest() throws Exception {
         //given
@@ -314,6 +313,7 @@ class BoardControllerTest extends BaseControllerTest {
         //when
         var result = mockMvc.perform(put("/api/boards/{boardId}/category", boards.get(0).getId())
                 .content(objectMapper.writeValueAsString(request))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 

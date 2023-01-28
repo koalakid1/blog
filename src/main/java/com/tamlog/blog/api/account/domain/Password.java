@@ -3,6 +3,7 @@ package com.tamlog.blog.api.account.domain;
 import com.tamlog.blog.api.account.exception.InvalidPasswordException;
 import com.tamlog.blog.api.account.exception.InvalidPasswordFormatException;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 
 @Getter
 @Embeddable
+@Slf4j
 public class Password {
 
     private static final Pattern PATTERN =
@@ -26,7 +28,7 @@ public class Password {
     }
 
     public void updatePassword(String nowPassword, String newPassword, PasswordEncoder passwordEncoder) {
-        if (!passwordEncoder.matches(this.value, nowPassword)) {
+        if (!passwordEncoder.matches(nowPassword, this.value)) {
             throw new InvalidPasswordException();
         }
 
@@ -37,6 +39,7 @@ public class Password {
 
     private void validate(String value) {
         if (!PATTERN.matcher(value).matches()) {
+            log.info(value);
             throw new InvalidPasswordFormatException();
         }
     }
